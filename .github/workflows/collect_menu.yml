@@ -63,6 +63,8 @@ jobs:
 
       - name: GitHub Pages ayarını hazırla
         uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Pages sitesini hazırla
         run: |
