@@ -4,7 +4,7 @@ on:
   schedule:
     # GitHub Actions UTC kullanır.
     # Salı–pazar: 08:05 TR günlük cache-only üretim (ESTÜ isteği yok).
-    - cron: "5 5 * * 2-7"
+    - cron: "5 5 * * 0,2-6"
     # Pazartesi: Akademik Kulüp için 08:03–16:03 TR arasında 30 dakikalık pencere.
     - cron: "3,33 5-12 * * 1"
     - cron: "3 13 * * 1"
@@ -62,7 +62,7 @@ jobs:
           elif { [ "$SCHEDULE" = "3,33 5-12 1 * *" ] || [ "$SCHEDULE" = "3 13 1 * *" ]; } \
                && [ "$(TZ=Europe/Istanbul date +%u)" -ge 6 ]; then
             echo "Ayın 1'i hafta sonu; aylık yenileme ilk uygun pazartesiye bırakıldı."
-          elif [ "$SCHEDULE" = "5 5 * * 2-7" ] \
+          elif [ "$SCHEDULE" = "5 5 * * 0,2-6" ] \
                && [ "$(TZ=Europe/Istanbul date +%d)" = "01" ] \
                && [ "$(TZ=Europe/Istanbul date +%u)" -le 5 ]; then
             echo "Ayın 1'i hafta içi; günlük cache-only çalışması aylık yenileme ile çakışmaması için atlandı."
