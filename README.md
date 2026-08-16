@@ -18,23 +18,23 @@ https://beytullahgol.github.io/estu-menu/
 
 ## Güncelleme mantığı
 
-`.github/workflows/collect_menu.yml` dosyasındaki zamanlanmış görev hafta içi her gün **Türkiye saatiyle yaklaşık 06:00**’da çalışır. GitHub Actions zamanlamaları UTC kullandığından workflow ifadesi `0 3 * * 1-5` olarak tanımlanmıştır.
+`.github/workflows/collect_menu.yml` dosyasındaki zamanlanmış görev hafta içi her gün **Türkiye saatiyle yaklaşık 06:00, 09:00 ve 12:00**’de çalışır. GitHub Actions zamanlamaları UTC kullandığından workflow ifadeleri `0 3`, `0 6` ve `0 9` UTC olarak tanımlanmıştır. Böylece 06:00 kontrolünde ESTÜ menüyü henüz yayımlamamışsa, aynı gün 09:00 ve 12:00 kontrollerinde tekrar denenir.
 
 Çalışma sırası şöyledir:
 
 1. ESTÜ’nün iki HTML sayfası alınır ve PDF bağlantıları etiketlerine göre seçilir.
-2. Aynı PDF URL’si daha önce cache’lenmişse PDF yeniden indirilmez. URL değiştiğinde yeni PDF indirilir; böylece aylık veya haftalık dosya değişmedikçe ESTÜ’ye gereksiz PDF isteği yapılmaz.
+2. Aynı PDF URL’si repository’deki `data/cache` klasöründe bulunuyorsa PDF yeniden indirilmez. Cache dosyaları workflow commit’iyle korunur. URL değiştiğinde yeni PDF indirilir; böylece aylık veya haftalık dosya değişmedikçe ESTÜ’ye gereksiz PDF isteği yapılmaz.
 3. PDF içindeki FlateDecode akışları, `Tj`/`TJ` metin operatörleri ve `ToUnicode` CMap eşlemeleri Python standart kütüphanesiyle çözülür.
 4. `data/menu.json` güncellenir ve yalnızca değişiklik varsa commit edilip repository’ye gönderilir.
 5. Pages’e yalnızca `site/data/menu.json` ve küçük bir bilgilendirme sayfası yayımlanır; PDF cache dosyaları Pages’e yüklenmez.
 
-Hafta sonu çalıştırmasında PDF indirilmez ve JSON şu durumu üretir: `status: "weekend_closed"`.
+Hafta sonu çalıştırmasında PDF indirilmez ve JSON şu durumu üretir: `status: "weekend_closed"`. Hafta içi sayfalarda hedef tarih henüz bulunamazsa JSON `status: "not_published"`, boş menü dizileri ve `message` alanında “Bugünün yemek listesi ESTÜ sitesinde henüz yayımlanmadı.” bilgisi üretir. Sadece bir yemekhane bulunursa `status: "partial"` yazılır. Ağ hatasında son geçerli JSON korunur ve bir sonraki zamanlanmış kontrol yeniden dener.
 
 ## JSON alanları
 
 | Alan | Açıklama |
 |---|---|
-| `status` | `ok`, `partial` veya `weekend_closed` |
+| `status` | `ok`, `partial`, `not_published` veya `weekend_closed` |
 | `date` | `GG.AA.YYYY` biçiminde hedef tarih |
 | `isoDate` | `YYYY-MM-DD` biçiminde tarih |
 | `weekday` | ISO hafta günü; Pazartesi `1`, Pazar `7` |
@@ -43,11 +43,12 @@ Hafta sonu çalıştırmasında PDF indirilmez ve JSON şu durumu üretir: `stat
 | `akademikKulup` | Akademik Kulüp yemek adları dizisi |
 | `generatedAt` | Üretim zamanı, Türkiye saat dilimiyle |
 | `sources` | Kullanılan ESTÜ sayfa/PDF URL’leri ve cache bilgisi |
-| `errors` | Kısmi sonuç varsa hata veya uyarı metinleri |
+| `retrySchedule` | Menü hazır değilse planlanan tekrar kontrol saatleri |
+| `errors` | Kısmi sonuç veya yayınlanmamış menü varsa hata/uyarı metinleri |
 
 ## Kestirmeler akışı
 
-Kestirmeler’de **URL’nin İçeriğini Al** eylemine yukarıdaki JSON adresini verin. Ardından **Sözlük Al** eylemini seçin. Ana yemekhane için `anaYemekhane`, Akademik Kulüp için `akademikKulup` anahtarlarından **Liste Al** ile diziyi alın. Hafta sonu için `status` değerini `weekend_closed` olarak kontrol edip bildirim metnini `message` alanından oluşturun.
+Kestirmeler’de **URL’nin İçeriğini Al** eylemine yukarıdaki JSON adresini verin. Eylemin **Yöntem** seçeneği `GET`, **İstek Gövdesi** ise boş olmalıdır; `POST`, JSON gövdesi veya `menu2.php` adresi kullanılmamalıdır. Ardından **Sözlük Al** eylemini seçin. Ana yemekhane için `anaYemekhane`, Akademik Kulüp için `akademikKulup` anahtarlarından **Liste Al** ile diziyi alın. `status` değeri `weekend_closed` veya `not_published` ise doğrudan `message` alanını bildirim olarak gösterin. GitHub Pages hızlı bir statik dosya sunduğu için bu akış ESTÜ veya InfinityFree bot korumasına bağlı değildir.
 
 ## Manuel workflow testi
 

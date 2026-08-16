@@ -2,8 +2,10 @@ name: ESTÜ menü verisini güncelle
 
 on:
   schedule:
-    # GitHub Actions cron UTC kullanır. Türkiye UTC+3 olduğu için 06:00 Türkiye.
+    # GitHub Actions UTC kullanır; Türkiye UTC+3 olduğu için 06:00, 09:00 ve 12:00.
     - cron: "0 3 * * 1-5"
+    - cron: "0 6 * * 1-5"
+    - cron: "0 9 * * 1-5"
   workflow_dispatch:
     inputs:
       date:
@@ -53,9 +55,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/menu.json
+          git add data/menu.json data/cache
           if git diff --cached --quiet; then
-            echo "data/menu.json değişmedi; yeni commit oluşturulmayacak."
+            echo "Menü veya cache değişmedi; yeni commit oluşturulmayacak."
           else
             git commit -m "chore: güncel ESTÜ menüsünü yayımla"
             git push

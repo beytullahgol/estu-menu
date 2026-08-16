@@ -554,6 +554,8 @@ def build_output(
     club_items: list[str],
     sources: dict[str, object],
     errors: list[str],
+    status_override: str | None = None,
+    message_override: str | None = None,
 ) -> dict[str, object]:
     is_weekend = target.isoweekday() >= 6
     if is_weekend:
@@ -565,13 +567,30 @@ def build_output(
             "weekday": target.isoweekday(),
             "isWeekend": True,
             "message": "Bugün hafta sonu, yemekhaneler kapalı.",
+            "retrySchedule": [],
             "anaYemekhane": [],
             "akademikKulup": [],
             "generatedAt": datetime.now(TIMEZONE).isoformat(timespec="seconds"),
             "sources": {},
             "errors": [],
         }
-    status = "ok" if ana_items and club_items else "partial"
+
+    status = status_override or ("ok" if ana_items and club_items else "partial")
+    if message_override is not None:
+        message = message_override
+    elif status == "ok":
+        message = None
+    elif status == "not_published":
+        message = (
+            "Bugünün yemek listesi ESTÜ sitesinde henüz yayımlanmadı. "
+            "Sonraki otomatik kontroller Türkiye saatiyle 09:00 ve 12:00'de yapılacaktır."
+        )
+    else:
+        message = (
+            "Menülerin bir kısmı henüz yayımlanmadı. "
+            "Sonraki otomatik kontroller Türkiye saatiyle 09:00 ve 12:00'de yapılacaktır."
+        )
+
     return {
         "ok": bool(ana_items or club_items),
         "status": status,
@@ -579,7 +598,8 @@ def build_output(
         "isoDate": target.strftime("%Y-%m-%d"),
         "weekday": target.isoweekday(),
         "isWeekend": False,
-        "message": None,
+        "message": message,
+        "retrySchedule": ["06:00", "09:00", "12:00"] if status != "ok" else [],
         "anaYemekhane": ana_items,
         "akademikKulup": club_items,
         "generatedAt": datetime.now(TIMEZONE).isoformat(timespec="seconds"),
@@ -665,13 +685,48 @@ def collect(root: Path, target: datetime, output_path: Path) -> int:
     except Exception as exc:
         errors.append(str(exc))
 
+    publication_errors = [
+        error
+        for error in errors
+        if "hedef tarih" in error or "bağlantısı bulunamadı" in error
+    ]
+    all_errors_mean_not_published = bool(errors) and len(publication_errors) == len(errors)
+
     if not ana_items and not club_items:
+        if all_errors_mean_not_published:
+            result = build_output(
+                target,
+                [],
+                [],
+                sources,
+                errors,
+                status_override="not_published",
+            )
+            write_json(output_path, result)
+            print(
+                f"{result['date']} için menü henüz yayımlanmadı; sonraki kontrol planlandı."
+            )
+            for error in errors:
+                print(f"UYARI: {error}", file=sys.stderr)
+            return 0
+
         print("Menülerin ikisi de üretilemedi; mevcut data/menu.json korunuyor.", file=sys.stderr)
         for error in errors:
             print(f"HATA: {error}", file=sys.stderr)
         return 2
 
-    result = build_output(target, ana_items, club_items, sources, errors)
+    if errors:
+        result = build_output(
+            target,
+            ana_items,
+            club_items,
+            sources,
+            errors,
+            status_override="partial",
+        )
+    else:
+        result = build_output(target, ana_items, club_items, sources, errors)
+
     write_json(output_path, result)
     print(
         f"{result['date']} menüsü yazıldı: ana={len(ana_items)}, akademik={len(club_items)}, "
