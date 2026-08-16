@@ -2,10 +2,10 @@ name: ESTÜ menü verisini güncelle
 
 on:
   schedule:
-    # GitHub Actions UTC kullanır; Türkiye UTC+3 olduğu için 06:00, 09:00 ve 12:00.
-    - cron: "0 3 * * 1-5"
-    - cron: "0 6 * * 1-5"
-    - cron: "0 9 * * 1-5"
+    # GitHub Actions UTC kullanır; saat başı yoğunluğunu azaltmak için yaklaşık 06:03, 09:03 ve 12:03 Türkiye.
+    - cron: "3 3 * * 1-5"
+    - cron: "3 6 * * 1-5"
+    - cron: "3 9 * * 1-5"
   workflow_dispatch:
     inputs:
       date:
@@ -62,6 +62,11 @@ jobs:
             git commit -m "chore: güncel ESTÜ menüsünü yayımla"
             git push
           fi
+
+      - name: jsDelivr cache'ini temizle
+        run: |
+          curl --fail --silent --show-error --location --retry 3 --max-time 30 \
+            https://purge.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json
 
       - name: GitHub Pages ayarını hazırla
         uses: actions/configure-pages@v5

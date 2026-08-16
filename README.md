@@ -4,11 +4,26 @@ Bu repository, Eskişehir Teknik Üniversitesi Sağlık, Kültür ve Spor Daire 
 
 ## JSON adresi
 
-GitHub Pages ilk kez dağıtıldıktan sonra Kestirmeler’de kullanılacak adres:
+Öncelikli Kestirmeler adresi:
+
+```text
+https://raw.githubusercontent.com/beytullahgol/estu-menu/main/data/menu.json
+```
+
+GitHub Pages adresi alternatif olarak kullanılabilir:
 
 ```text
 https://beytullahgol.github.io/estu-menu/data/menu.json
 ```
+
+Telefon ağı GitHub Pages alan adına erişemiyorsa aşağıdaki ücretsiz CDN adreslerinden biri kullanılabilir:
+
+```text
+https://cdn.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json
+https://fastly.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json
+```
+
+Workflow her veri değişikliğinden sonra jsDelivr cache’ini temizler. CDN güncellemesi birkaç saniye gecikirse URL’nin sonuna `?v=1` gibi bir sorgu parametresi eklenebilir.
 
 Repository’nin ana sayfası da bu endpoint’e bağlantı verir:
 
@@ -18,7 +33,7 @@ https://beytullahgol.github.io/estu-menu/
 
 ## Güncelleme mantığı
 
-`.github/workflows/collect_menu.yml` dosyasındaki zamanlanmış görev hafta içi her gün **Türkiye saatiyle yaklaşık 06:00, 09:00 ve 12:00**’de çalışır. GitHub Actions zamanlamaları UTC kullandığından workflow ifadeleri `0 3`, `0 6` ve `0 9` UTC olarak tanımlanmıştır. Böylece 06:00 kontrolünde ESTÜ menüyü henüz yayımlamamışsa, aynı gün 09:00 ve 12:00 kontrollerinde tekrar denenir.
+`.github/workflows/collect_menu.yml` dosyasındaki zamanlanmış görev hafta içi her gün **Türkiye saatiyle yaklaşık 06:03, 09:03 ve 12:03**’te çalışır. GitHub Actions zamanlamaları UTC kullandığından workflow ifadeleri `3 3`, `3 6` ve `3 9` UTC olarak tanımlanmıştır. Böylece 06:03 kontrolünde ESTÜ menüyü henüz yayımlamamışsa, aynı gün 09:03 ve 12:03 kontrollerinde tekrar denenir.
 
 Çalışma sırası şöyledir:
 
@@ -48,7 +63,7 @@ Hafta sonu çalıştırmasında PDF indirilmez ve JSON şu durumu üretir: `stat
 
 ## Kestirmeler akışı
 
-Kestirmeler’de **URL’nin İçeriğini Al** eylemine yukarıdaki JSON adresini verin. Eylemin **Yöntem** seçeneği `GET`, **İstek Gövdesi** ise boş olmalıdır; `POST`, JSON gövdesi veya `menu2.php` adresi kullanılmamalıdır. Ardından **Sözlük Al** eylemini seçin. Ana yemekhane için `anaYemekhane`, Akademik Kulüp için `akademikKulup` anahtarlarından **Liste Al** ile diziyi alın. `status` değeri `weekend_closed` veya `not_published` ise doğrudan `message` alanını bildirim olarak gösterin. GitHub Pages hızlı bir statik dosya sunduğu için bu akış ESTÜ veya InfinityFree bot korumasına bağlı değildir.
+Kestirmeler’de **URL’nin İçeriğini Al** eylemine öncelikli raw GitHub adresini veya telefonda açılan CDN JSON adresini verin. Eylemin **Yöntem** seçeneği `GET`, **İstek Gövdesi** ise boş olmalıdır; `POST`, JSON gövdesi veya `menu2.php` adresi kullanılmamalıdır. Ardından **Sözlük Al** eylemini seçin. Ana yemekhane için `anaYemekhane`, Akademik Kulüp için `akademikKulup` anahtarlarından **Liste Al** ile diziyi alın. `status` değeri `weekend_closed` veya `not_published` ise doğrudan `message` alanını bildirim olarak gösterin. Raw GitHub ve jsDelivr hızlı statik dosya sunduğu için bu akış ESTÜ veya InfinityFree bot korumasına bağlı değildir. GitHub Pages yalnızca alternatif yayın adresidir.
 
 ## Manuel workflow testi
 
