@@ -1,25 +1,15 @@
 {
-  "ok": false,
-  "status": "not_published",
-  "date": "31.12.2030",
-  "isoDate": "2030-12-31",
-  "weekday": 2,
-  "isWeekend": false,
-  "message": "Bugünün yemek listesi ESTÜ sitesinde henüz yayımlanmadı. Sonraki otomatik kontroller Türkiye saatiyle 09:00 ve 12:00'de yapılacaktır.",
-  "retrySchedule": [
-    "06:00",
-    "09:00",
-    "12:00"
-  ],
+  "ok": true,
+  "status": "weekend_closed",
+  "date": "16.08.2026",
+  "isoDate": "2026-08-16",
+  "weekday": 7,
+  "isWeekend": true,
+  "message": "Bugün hafta sonu, yemekhaneler kapalı.",
+  "retrySchedule": [],
   "anaYemekhane": [],
   "akademikKulup": [],
-  "generatedAt": "2026-08-16T16:38:14+03:00",
-  "sources": {
-    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
-    "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu"
-  },
-  "errors": [
-    "Ana yemekhane PDF'sinde hedef tarih için yemek bulunamadı.",
-    "Akademik Kulüp PDF'sinde hedef tarih için yemek bulunamadı."
-  ]
+  "generatedAt": "2026-08-16T16:39:06+03:00",
+  "sources": {},
+  "errors": []
 }
