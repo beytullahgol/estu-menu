@@ -1,14 +1,40 @@
 {
   "ok": true,
-  "status": "weekend_closed",
-  "date": "16.08.2026",
-  "isoDate": "2026-08-16",
-  "weekday": 7,
-  "isWeekend": true,
-  "message": "Bugün hafta sonu, yemekhaneler kapalı.",
-  "anaYemekhane": [],
-  "akademikKulup": [],
-  "generatedAt": "2026-08-16T12:40:32+03:00",
-  "sources": {},
+  "status": "ok",
+  "date": "14.08.2026",
+  "isoDate": "2026-08-14",
+  "weekday": 5,
+  "isWeekend": false,
+  "message": null,
+  "anaYemekhane": [
+    "SÜZME MERCİMEK ÇORBA",
+    "EKŞİLİ KÖFTE",
+    "PATATES YEMEĞİ*",
+    "TEREYAĞLI MAKARNA",
+    "KAKAOLU PUDİNG"
+  ],
+  "akademikKulup": [
+    "SOĞUK AYRAN AŞI",
+    "AKÇAABAT KÖFTE",
+    "SEBZELİ FIRIN PİLİÇ",
+    "ERİŞTE"
+  ],
+  "generatedAt": "2026-08-16T12:42:01+03:00",
+  "sources": {
+    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
+    "anaYemekhanePdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/A%C4%9EUSTOS%202026%20MEN%C3%9C(1).pdf",
+    "anaYemekhanePageUsedCache": false,
+    "anaYemekhanePdfUsedCache": false,
+    "anaYemekhaneFinalPageUrl": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
+    "anaYemekhaneFinalPdfUrl": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/A%C4%9EUSTOS%202026%20MEN%C3%9C(1).pdf",
+    "anaYemekhanePdfLinkLabel": "Yemek Menüsü (Ağustos-2026)",
+    "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
+    "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_08_10.pdf",
+    "akademikKulupPageUsedCache": false,
+    "akademikKulupPdfUsedCache": false,
+    "akademikKulupFinalPageUrl": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
+    "akademikKulupFinalPdfUrl": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_08_10.pdf",
+    "akademikKulupPdfLinkLabel": "-14 Ağustos Akademik Kulüp Haftalık Menü"
+  },
   "errors": []
 }
