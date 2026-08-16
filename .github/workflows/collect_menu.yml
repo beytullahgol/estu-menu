@@ -51,7 +51,16 @@ jobs:
             python scripts/collect_menu.py
           fi
 
+      - name: Manuel test çıktısını artifact olarak yükle
+        if: ${{ inputs.date }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: menu-test-${{ inputs.date }}
+          path: data/menu.json
+          if-no-files-found: error
+
       - name: Değişen JSON'u commit et
+        if: ${{ !inputs.date }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -64,16 +73,19 @@ jobs:
           fi
 
       - name: jsDelivr cache'ini temizle
+        if: ${{ !inputs.date }}
         run: |
           curl --fail --silent --show-error --location --retry 3 --max-time 30 \
             https://purge.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json
 
       - name: GitHub Pages ayarını hazırla
+        if: ${{ !inputs.date }}
         uses: actions/configure-pages@v5
         with:
           enablement: true
 
       - name: Pages sitesini hazırla
+        if: ${{ !inputs.date }}
         run: |
           rm -rf site
           mkdir -p site/data
@@ -92,10 +104,12 @@ jobs:
           HTML
 
       - name: Pages çıktısını yükle
+        if: ${{ !inputs.date }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: "site"
 
       - name: GitHub Pages'e dağıt
+        if: ${{ !inputs.date }}
         id: deployment
         uses: actions/deploy-pages@v4
