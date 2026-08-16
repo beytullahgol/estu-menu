@@ -1,0 +1,92 @@
+name: ESTÜ menü verisini güncelle
+
+on:
+  schedule:
+    # GitHub Actions cron UTC kullanır. Türkiye UTC+3 olduğu için 06:00 Türkiye.
+    - cron: "0 3 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "İsteğe bağlı test tarihi (GG.AA.YYYY); boş bırakılırsa bugün"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    name: Menüyü topla ve Pages'e yayımla
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository'yi al
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Python'u kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Bağımlılıkları kur
+        run: python -m pip install --upgrade pip -r requirements.txt
+
+      - name: Menü JSON'unu üret
+        env:
+          REQUESTED_DATE: ${{ inputs.date }}
+        run: |
+          if [ -n "$REQUESTED_DATE" ]; then
+            python scripts/collect_menu.py --date "$REQUESTED_DATE"
+          else
+            python scripts/collect_menu.py
+          fi
+
+      - name: Değişen JSON'u commit et
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/menu.json
+          if git diff --cached --quiet; then
+            echo "data/menu.json değişmedi; yeni commit oluşturulmayacak."
+          else
+            git commit -m "chore: güncel ESTÜ menüsünü yayımla"
+            git push
+          fi
+
+      - name: GitHub Pages ayarını hazırla
+        uses: actions/configure-pages@v5
+
+      - name: Pages sitesini hazırla
+        run: |
+          rm -rf site
+          mkdir -p site/data
+          cp data/menu.json site/data/menu.json
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <html lang="tr">
+          <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ESTÜ Menü JSON</title></head>
+          <body>
+            <main>
+              <h1>ESTÜ yemekhane menüsü</h1>
+              <p>iOS Kestirmeleri için güncel veri: <a href="data/menu.json">data/menu.json</a></p>
+            </main>
+          </body>
+          </html>
+          HTML
+
+      - name: Pages çıktısını yükle
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "site"
+
+      - name: GitHub Pages'e dağıt
+        id: deployment
+        uses: actions/deploy-pages@v4

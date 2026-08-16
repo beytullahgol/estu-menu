@@ -1,0 +1,2 @@
+# collect_menu.py Python standart kütüphanesiyle çalışır.
+# Gelecekte harici bağımlılık eklenirse bu dosyaya bir satır eklenebilir.
