@@ -46,7 +46,9 @@ jobs:
           REQUESTED_DATE: ${{ inputs.date }}
         run: |
           if [ -n "$REQUESTED_DATE" ]; then
-            python scripts/collect_menu.py --date "$REQUESTED_DATE"
+            python scripts/collect_menu.py \
+              --date "$REQUESTED_DATE" \
+              --output "data/test/${REQUESTED_DATE}.json"
           else
             python scripts/collect_menu.py
           fi
@@ -56,10 +58,25 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: menu-test-${{ inputs.date }}
-          path: data/menu.json
+          path: data/test/${{ inputs.date }}.json
           if-no-files-found: error
 
-      - name: Değişen JSON'u commit et
+      - name: Manuel test JSON'unu raw endpoint olarak commit et
+        if: ${{ inputs.date }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "data/test/${REQUESTED_DATE}.json" data/cache
+          if git diff --cached --quiet; then
+            echo "Test JSON'u veya cache değişmedi; yeni commit oluşturulmayacak."
+          else
+            git commit -m "test: ESTÜ menüsü ${REQUESTED_DATE}"
+            git push
+          fi
+        env:
+          REQUESTED_DATE: ${{ inputs.date }}
+
+      - name: Güncel JSON'u commit et
         if: ${{ !inputs.date }}
         run: |
           git config user.name "github-actions[bot]"

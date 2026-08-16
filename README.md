@@ -67,7 +67,25 @@ Kestirmeler’de **URL’nin İçeriğini Al** eylemine öncelikli raw GitHub ad
 
 ## Manuel workflow testi
 
-GitHub repository’sindeki **Actions** sekmesinden **ESTÜ menü verisini güncelle** workflow’unu açıp **Run workflow** seçilebilir. `date` alanına örneğin `14.08.2026` yazılırsa, canlı ESTÜ PDF’lerinden o tarih için regresyon testi yapılır. Alan boş bırakılırsa Türkiye saatine göre güncel tarih kullanılır.
+GitHub repository’sindeki **Actions** sekmesinden **ESTÜ menü verisini güncelle** workflow’unu açıp **Run workflow** seçilebilir. `date` alanına `13.08.2026` gibi bir tarih yazıldığında, canlı ESTÜ PDF’lerinden o tarih için regresyon testi yapılır. Test sonucu production `data/menu.json` dosyasını değiştirmez; ayrı bir raw JSON dosyasına yazılır:
+
+```text
+https://raw.githubusercontent.com/beytullahgol/estu-menu/main/data/test/13.08.2026.json
+```
+
+Başka bir tarih için dosya adındaki tarihi değiştirin. Örneğin `14.08.2026` testi için:
+
+```text
+https://raw.githubusercontent.com/beytullahgol/estu-menu/main/data/test/14.08.2026.json
+```
+
+Bu test URL’si Kestirmeler’de production URL’siyle aynı şekilde kullanılabilir: **URL → URL’nin İçeriğini Al (GET) → Sözlük Al**. Tarih testinin ardından iPhone’un production menüsüne dönmek için tekrar şu adresi kullanın:
+
+```text
+https://raw.githubusercontent.com/beytullahgol/estu-menu/main/data/menu.json
+```
+
+Alan boş bırakılırsa workflow Türkiye saatine göre güncel tarihi `data/menu.json` içine yayımlar ve Pages dağıtımını yapar. Manuel tarih testi artık artifact olarak da saklanır; Actions çalıştırmasının özetindeki **Artifacts** bölümünden indirilebilir.
 
 ## Kaynaklar
 
