@@ -1,26 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "14.08.2026",
-  "isoDate": "2026-08-14",
-  "weekday": 5,
+  "date": "13.08.2026",
+  "isoDate": "2026-08-13",
+  "weekday": 4,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "SÜZME MERCİMEK ÇORBA",
-    "EKŞİLİ KÖFTE",
-    "PATATES YEMEĞİ*",
-    "TEREYAĞLI MAKARNA",
-    "KAKAOLU PUDİNG"
+    "SEBZE ÇORBA",
+    "PAPAZ YAHNİ",
+    "ZY. BROKOLİ*",
+    "BULGUR PİLAVI",
+    "PATLICAN SALATASI"
   ],
   "akademikKulup": [
-    "SOĞUK AYRAN AŞI",
-    "AKÇAABAT KÖFTE",
-    "SEBZELİ FIRIN PİLİÇ",
-    "ERİŞTE"
+    "KUZU PİRZOLA",
+    "PİLİÇ SCHNITZEL",
+    "BİBER DOLMASI",
+    "BULGUR PİLAVI"
   ],
-  "generatedAt": "2026-08-16T21:08:56+03:00",
+  "generatedAt": "2026-08-16T21:10:00+03:00",
   "sources": {
     "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
     "anaYemekhanePdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/A%C4%9EUSTOS%202026%20MEN%C3%9C(1).pdf",
