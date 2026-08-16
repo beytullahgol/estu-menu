@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "status": "ok",
+  "date": "13.08.2026",
+  "isoDate": "2026-08-13",
+  "weekday": 4,
+  "isWeekend": false,
+  "message": null,
+  "retrySchedule": [],
+  "anaYemekhane": [
+    "SEBZE ÇORBA",
+    "PAPAZ YAHNİ",
+    "ZY. BROKOLİ*",
+    "BULGUR PİLAVI",
+    "PATLICAN SALATASI"
+  ],
+  "akademikKulup": [
+    "KUZU PİRZOLA",
+    "PİLİÇ SCHNITZEL",
+    "BİBER DOLMASI",
+    "BULGUR PİLAVI"
+  ],
+  "generatedAt": "2026-08-16T21:28:38+03:00",
+  "sources": {
+    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
+    "anaYemekhanePdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/A%C4%9EUSTOS%202026%20MEN%C3%9C(1).pdf",
+    "anaYemekhanePageUsedCache": false,
+    "anaYemekhanePdfUsedCache": true,
+    "anaYemekhaneFinalPageUrl": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
+    "anaYemekhaneFinalPdfUrl": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/A%C4%9EUSTOS%202026%20MEN%C3%9C(1).pdf",
+    "anaYemekhanePdfLinkLabel": "Yemek Menüsü (Ağustos-2026)",
+    "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
+    "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_08_10.pdf",
+    "akademikKulupPageUsedCache": false,
+    "akademikKulupPdfUsedCache": true,
+    "akademikKulupFinalPageUrl": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
+    "akademikKulupFinalPdfUrl": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_08_10.pdf",
+    "akademikKulupPdfLinkLabel": "-14 Ağustos Akademik Kulüp Haftalık Menü"
+  },
+  "errors": []
+}
