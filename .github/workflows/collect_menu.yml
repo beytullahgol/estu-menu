@@ -2,10 +2,15 @@ name: ESTÜ menü verisini güncelle
 
 on:
   schedule:
-    # GitHub Actions UTC kullanır; saat başı yoğunluğunu azaltmak için yaklaşık 06:03, 09:03 ve 12:03 Türkiye.
-    - cron: "3 3 * * 1-5"
-    - cron: "3 6 * * 1-5"
-    - cron: "3 9 * * 1-5"
+    # GitHub Actions UTC kullanır.
+    # Salı–pazar: 08:05 TR günlük cache-only üretim (ESTÜ isteği yok).
+    - cron: "5 5 * * 2-7"
+    # Pazartesi: Akademik Kulüp için 08:03–16:03 TR arasında 30 dakikalık pencere.
+    - cron: "3,33 5-12 * * 1"
+    - cron: "3 13 * * 1"
+    # Ayın 1'i: Ana yemekhane için aynı 30 dakikalık pencere.
+    - cron: "3,33 5-12 1 * *"
+    - cron: "3 13 1 * *"
   workflow_dispatch:
     inputs:
       date:
@@ -44,13 +49,25 @@ jobs:
       - name: Menü JSON'unu üret
         env:
           REQUESTED_DATE: ${{ inputs.date }}
+          SCHEDULE: ${{ github.event.schedule }}
         run: |
           if [ -n "$REQUESTED_DATE" ]; then
             python scripts/collect_menu.py \
               --date "$REQUESTED_DATE" \
+              --mode refresh \
               --output "data/test/${REQUESTED_DATE}.json"
+          elif { [ "$SCHEDULE" = "3,33 5-12 * * 1" ] || [ "$SCHEDULE" = "3 13 * * 1" ]; } \
+               && [ "$(TZ=Europe/Istanbul date +%d)" = "01" ]; then
+            echo "Ayın 1'i pazartesiye denk geldi; haftalık cron çalışması aylık cron tarafından yinelenmemesi için atlandı."
+          elif { [ "$SCHEDULE" = "3,33 5-12 1 * *" ] || [ "$SCHEDULE" = "3 13 1 * *" ]; } \
+               && [ "$(TZ=Europe/Istanbul date +%u)" -ge 6 ]; then
+            echo "Ayın 1'i hafta sonu; aylık yenileme ilk uygun pazartesiye bırakıldı."
+          elif [ "$SCHEDULE" = "5 5 * * 2-7" ] \
+               && [ "$(TZ=Europe/Istanbul date +%d)" = "01" ] \
+               && [ "$(TZ=Europe/Istanbul date +%u)" -le 5 ]; then
+            echo "Ayın 1'i hafta içi; günlük cache-only çalışması aylık yenileme ile çakışmaması için atlandı."
           else
-            python scripts/collect_menu.py
+            python scripts/collect_menu.py --mode auto
           fi
 
       - name: Manuel test çıktısını artifact olarak yükle

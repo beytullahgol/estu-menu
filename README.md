@@ -33,17 +33,29 @@ https://beytullahgol.github.io/estu-menu/
 
 ## Güncelleme mantığı
 
-`.github/workflows/collect_menu.yml` dosyasındaki zamanlanmış görev hafta içi her gün **Türkiye saatiyle yaklaşık 06:03, 09:03 ve 12:03**’te çalışır. GitHub Actions zamanlamaları UTC kullandığından workflow ifadeleri `3 3`, `3 6` ve `3 9` UTC olarak tanımlanmıştır. Böylece 06:03 kontrolünde ESTÜ menüyü henüz yayımlamamışsa, aynı gün 09:03 ve 12:03 kontrollerinde tekrar denenir.
+Collector artık kaynak bazlı çalışır. **Salı–pazar** günlerinde günlük workflow yalnızca repository’deki cache’lenmiş PDF’lerden JSON üretir; ESTÜ’ye HTML veya PDF isteği göndermez. **Pazartesi** günlerinde yalnızca Akademik Kulüp kaynağı, **ayın 1’inde** ise yalnızca Ana Yemekhane kaynağı kontrol edilir. Ayın 1’i hafta sonuna denk gelirse ana yemekhane kontrolü ilk uygun pazartesiye bırakılır.
+
+GitHub Actions UTC kullandığı için zamanlama Türkiye saatine yaklaşık olarak şöyledir:
+
+| Çalışma | Türkiye saati | Dış kaynak davranışı |
+|---|---|---|
+| Günlük cache-only | 08:05, Salı–Pazar | ESTÜ isteği yok |
+| Akademik Kulüp yenileme | Pazartesi 08:03–16:03, 30 dakikada bir | Yalnızca yeni haftalık PDF bulunana kadar kontrol |
+| Ana Yemekhane yenileme | Ayın 1’i 08:03–16:03, 30 dakikada bir | Yalnızca yeni aylık PDF bulunana kadar kontrol |
+
+İlk başarılı yenilemeden sonra aynı günün sonraki workflow’larında kaynak PDF’si yerel cache’te bulunduğu için tekrar HTML/PDF isteği yapılmaz. Yeni PDF henüz yayımlanmamışsa ilgili yayın penceresindeki bir sonraki kontrol tekrar dener. Böylece geç yayımlanan Akademik Kulüp menüsü pazartesi günü, geç yayımlanan aylık menü ise ayın 1’i veya gerekiyorsa ilk uygun pazartesi günü yakalanır.
 
 Çalışma sırası şöyledir:
 
-1. ESTÜ’nün iki HTML sayfası alınır ve PDF bağlantıları etiketlerine göre seçilir.
-2. Aynı PDF URL’si repository’deki `data/cache` klasöründe bulunuyorsa PDF yeniden indirilmez. Cache dosyaları workflow commit’iyle korunur. URL değiştiğinde yeni PDF indirilir; böylece aylık veya haftalık dosya değişmedikçe ESTÜ’ye gereksiz PDF isteği yapılmaz.
-3. PDF içindeki FlateDecode akışları, `Tj`/`TJ` metin operatörleri ve `ToUnicode` CMap eşlemeleri Python standart kütüphanesiyle çözülür.
-4. `data/menu.json` güncellenir ve yalnızca değişiklik varsa commit edilip repository’ye gönderilir.
-5. Pages’e yalnızca `site/data/menu.json` ve küçük bir bilgilendirme sayfası yayımlanır; PDF cache dosyaları Pages’e yüklenmez.
+1. `auto` modu hedef tarihe ve haftanın gününe bakarak `main`, `club` veya boş yenileme kümesini seçer.
+2. Yenileme kümesi boşsa yalnızca `data/cache/pdfs` içindeki PDF’ler taranır; ESTÜ’ye ağ isteği yapılmaz.
+3. Yenileme gerekiyorsa yalnızca ilgili HTML sayfası alınır ve yeni PDF bağlantısı aranır. Aynı PDF URL’si `data/cache` içinde bulunuyorsa PDF yeniden indirilmez.
+4. Kaynak URL’leri `data/cache/source_state.json` içinde saklanır; bu dosya workflow commit’iyle korunur.
+5. PDF içindeki FlateDecode akışları, `Tj`/`TJ` metin operatörleri ve `ToUnicode` CMap eşlemeleri Python standart kütüphanesiyle çözülür.
+6. `data/menu.json` güncellenir ve yalnızca değişiklik varsa commit edilip repository’ye gönderilir.
+7. Pages’e yalnızca `site/data/menu.json` ve küçük bir bilgilendirme sayfası yayımlanır; PDF cache dosyaları Pages’e yüklenmez.
 
-Hafta sonu çalıştırmasında PDF indirilmez ve JSON şu durumu üretir: `status: "weekend_closed"`. Hafta içi sayfalarda hedef tarih henüz bulunamazsa JSON `status: "not_published"`, boş menü dizileri ve `message` alanında “Bugünün yemek listesi ESTÜ sitesinde henüz yayımlanmadı.” bilgisi üretir. Sadece bir yemekhane bulunursa `status: "partial"` yazılır. Ağ hatasında son geçerli JSON korunur ve bir sonraki zamanlanmış kontrol yeniden dener.
+Hafta sonu üretiminde ESTÜ isteği yapılmaz ve JSON `status: "weekend_closed"` üretir. Yeni PDF yayınlanmamışsa veya cache’te hedef gün bulunamıyorsa JSON `status: "not_published"` olur. Sadece bir yemekhane üretilebilirse `status: "partial"` yazılır. Ağ hatasında son geçerli cache korunur ve ilgili yayın günündeki sonraki kontrol yeniden dener.
 
 ## JSON alanları
 

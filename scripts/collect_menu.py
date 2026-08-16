@@ -538,6 +538,14 @@ def get_pdf_cached_or_fetch(root: Path, url: str) -> tuple[bytes, bool, str]:
     return body, False, final_url
 
 
+REFRESH_TIMES = [
+    f"{hour:02d}:{minute:02d}"
+    for hour in range(8, 17)
+    for minute in (3, 33)
+    if not (hour == 16 and minute == 33)
+]
+
+
 def parse_date(value: str | None) -> datetime:
     if not value:
         return datetime.now(TIMEZONE)
@@ -548,6 +556,278 @@ def parse_date(value: str | None) -> datetime:
     return parsed.replace(tzinfo=TIMEZONE)
 
 
+def source_state_path(root: Path) -> Path:
+    return root / "data" / "cache" / "source_state.json"
+
+
+def load_source_state(root: Path) -> dict[str, dict[str, object]]:
+    path = source_state_path(root)
+    state: dict[str, dict[str, object]] = {}
+    if path.exists():
+        try:
+            loaded = json.loads(path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                state = {
+                    str(name): dict(value)
+                    for name, value in loaded.items()
+                    if isinstance(value, dict)
+                }
+        except (OSError, json.JSONDecodeError, TypeError, ValueError):
+            state = {}
+
+    # Eski sürümün menu.json kaynak alanlarından ilk state'i oluştur.
+    if not state:
+        menu_path = root / "data" / "menu.json"
+        try:
+            current = json.loads(menu_path.read_text(encoding="utf-8"))
+            sources = current.get("sources", {}) if isinstance(current, dict) else {}
+            if isinstance(sources, dict):
+                main_url = sources.get("anaYemekhanePdf")
+                club_url = sources.get("akademikKulupPdf")
+                if main_url:
+                    state["anaYemekhane"] = {
+                        "pageUrl": MAIN_PAGE_URL,
+                        "pdfUrl": main_url,
+                        "pdfLabel": sources.get("anaYemekhanePdfLinkLabel", ""),
+                    }
+                if club_url:
+                    state["akademikKulup"] = {
+                        "pageUrl": CLUB_PAGE_URL,
+                        "pdfUrl": club_url,
+                        "pdfLabel": sources.get("akademikKulupPdfLinkLabel", ""),
+                    }
+        except (OSError, json.JSONDecodeError, TypeError, ValueError):
+            pass
+
+    state.setdefault("anaYemekhane", {})
+    state.setdefault("akademikKulup", {})
+    return state
+
+
+def save_source_state(root: Path, state: dict[str, dict[str, object]]) -> None:
+    write_json(source_state_path(root), state)
+
+
+def cached_pdf_path(root: Path, url: str) -> Path:
+    return url_cache_path(root, "pdfs", url, ".pdf")
+
+
+def cached_pdf_candidates(root: Path) -> list[Path]:
+    directory = root / "data" / "cache" / "pdfs"
+    return sorted(path for path in directory.glob("*.pdf") if path.is_file() and path.stat().st_size > 0)
+
+
+def find_cached_items(root: Path, target: datetime, source: str) -> tuple[list[str], Path | None]:
+    date_text = (
+        target.strftime("%d.%m.%Y")
+        if source == "main"
+        else f"{target.day}.{target.month}.{target.year}"
+    )
+    for path in cached_pdf_candidates(root):
+        try:
+            blocks = pdf_text_blocks(path.read_bytes())
+            items = (
+                extract_monthly_items(blocks, date_text)
+                if source == "main"
+                else extract_weekly_items(blocks, date_text)
+            )
+            if items:
+                return items, path
+        except OSError:
+            continue
+    return [], None
+
+
+def monthly_cache_matches_target(root: Path, target: datetime, state: dict[str, dict[str, object]]) -> bool:
+    # URL/etiket yerine PDF içeriğini doğrulamak daha güvenlidir; aynı URL altında
+    # dosya içeriği değişmiş olsa bile hedef gün gerçekten bulunuyorsa cache geçerlidir.
+    items, _ = find_cached_items(root, target, "main")
+    return bool(items)
+
+
+def decide_refresh_sources(
+    root: Path,
+    target: datetime,
+    state: dict[str, dict[str, object]],
+    mode: str,
+) -> set[str]:
+    if mode == "cache-only" or target.isoweekday() >= 6:
+        return set()
+    if mode == "refresh":
+        return {"main", "club"}
+    if mode == "main":
+        return {"main"}
+    if mode == "club":
+        return {"club"}
+    if mode != "auto":
+        raise ValueError(f"Bilinmeyen çalışma modu: {mode}")
+
+    refresh: set[str] = set()
+    first_day = target.replace(day=1)
+    # Aylık PDF ayın 1'inde; ayın 1'i hafta sonuna denk gelirse ilk pazartesi
+    # kontrol edilir. PDF cache'e girdikten sonra aynı gün tekrar indirme yapılmaz.
+    main_due = target.day == 1 or (
+        target.weekday() == 0
+        and first_day.isoweekday() >= 6
+        and target.day <= 7
+    )
+    if main_due and not monthly_cache_matches_target(root, target, state):
+        refresh.add("main")
+    # Akademik Kulüp PDF’i pazartesi kontrol edilir; yeni PDF cache'e girdikten
+    # sonra 30 dakikalık pencerenin kalanında HTML isteği yapılmaz.
+    if target.weekday() == 0:
+        club_items, _ = find_cached_items(root, target, "club")
+        if not club_items:
+            refresh.add("club")
+    return refresh
+
+
+def collect_main_source(
+    root: Path,
+    target: datetime,
+    state: dict[str, dict[str, object]],
+    refresh: bool,
+) -> tuple[list[str], dict[str, object]]:
+    sources: dict[str, object] = {"anaYemekhanePage": MAIN_PAGE_URL}
+    entry = state.setdefault("anaYemekhane", {})
+
+    if refresh:
+        main_html, page_stale, main_final_url = get_cached_or_fetch(
+            root, MAIN_PAGE_URL, "pages", ".html"
+        )
+        main_link = select_monthly_pdf(extract_pdf_links(main_html, MAIN_PAGE_URL), target)
+        if main_link is None:
+            raise RuntimeError("Ana yemekhane için aylık PDF bağlantısı bulunamadı.")
+        main_pdf, pdf_stale, pdf_final_url = get_pdf_cached_or_fetch(root, main_link.url)
+        entry.update(
+            {
+                "pageUrl": MAIN_PAGE_URL,
+                "pdfUrl": main_link.url,
+                "pdfLabel": main_link.label,
+                "finalPageUrl": main_final_url,
+                "finalPdfUrl": pdf_final_url,
+            }
+        )
+        sources.update(
+            {
+                "anaYemekhanePdf": main_link.url,
+                "anaYemekhanePageUsedCache": page_stale,
+                "anaYemekhanePdfUsedCache": pdf_stale,
+                "anaYemekhaneFinalPageUrl": main_final_url,
+                "anaYemekhaneFinalPdfUrl": pdf_final_url,
+                "anaYemekhanePdfLinkLabel": main_link.label,
+            }
+        )
+    else:
+        pdf_url = str(entry.get("pdfUrl") or "")
+        main_pdf = None
+        if pdf_url:
+            path = cached_pdf_path(root, pdf_url)
+            if path.exists():
+                main_pdf = path.read_bytes()
+                sources.update(
+                    {
+                        "anaYemekhanePdf": pdf_url,
+                        "anaYemekhanePdfUsedCache": True,
+                        "anaYemekhanePageUsedCache": True,
+                        "anaYemekhanePdfLinkLabel": entry.get("pdfLabel", ""),
+                    }
+                )
+        if main_pdf is None:
+            items, path = find_cached_items(root, target, "main")
+            if items:
+                sources.update(
+                    {
+                        "anaYemekhanePageUsedCache": True,
+                        "anaYemekhanePdfUsedCache": True,
+                        "anaYemekhanePdfCacheFile": str(path.relative_to(root)) if path else None,
+                    }
+                )
+                return items, sources
+            raise RuntimeError("Ana yemekhane yerel cache'inde hedef tarih için yemek bulunamadı.")
+
+    items = extract_monthly_items(pdf_text_blocks(main_pdf), target.strftime("%d.%m.%Y"))
+    if not items:
+        # Eski source_state URL’si kalmış olabilir; yerel cache’teki diğer PDF’leri
+        # ağ isteği yapmadan son kez tara.
+        cached_items, cached_path = find_cached_items(root, target, "main")
+        if cached_items:
+            sources["anaYemekhanePdfCacheFile"] = str(cached_path.relative_to(root)) if cached_path else None
+            return cached_items, sources
+        raise RuntimeError("Ana yemekhane PDF'sinde hedef tarih için yemek bulunamadı.")
+    return items, sources
+
+
+def collect_club_source(
+    root: Path,
+    target: datetime,
+    state: dict[str, dict[str, object]],
+    refresh: bool,
+) -> tuple[list[str], dict[str, object]]:
+    sources: dict[str, object] = {"akademikKulupPage": CLUB_PAGE_URL}
+    entry = state.setdefault("akademikKulup", {})
+
+    if refresh:
+        club_html, page_stale, club_final_url = get_cached_or_fetch(
+            root, CLUB_PAGE_URL, "pages", ".html"
+        )
+        club_link = select_weekly_pdf(extract_pdf_links(club_html, CLUB_PAGE_URL))
+        if club_link is None:
+            raise RuntimeError("Akademik Kulüp için haftalık PDF bağlantısı bulunamadı.")
+        club_pdf, pdf_stale, pdf_final_url = get_pdf_cached_or_fetch(root, club_link.url)
+        entry.update(
+            {
+                "pageUrl": CLUB_PAGE_URL,
+                "pdfUrl": club_link.url,
+                "pdfLabel": club_link.label,
+                "finalPageUrl": club_final_url,
+                "finalPdfUrl": pdf_final_url,
+            }
+        )
+        sources.update(
+            {
+                "akademikKulupPdf": club_link.url,
+                "akademikKulupPageUsedCache": page_stale,
+                "akademikKulupPdfUsedCache": pdf_stale,
+                "akademikKulupFinalPageUrl": club_final_url,
+                "akademikKulupFinalPdfUrl": pdf_final_url,
+                "akademikKulupPdfLinkLabel": club_link.label,
+            }
+        )
+    else:
+        pdf_url = str(entry.get("pdfUrl") or "")
+        club_pdf = None
+        if pdf_url:
+            path = cached_pdf_path(root, pdf_url)
+            if path.exists():
+                club_pdf = path.read_bytes()
+                sources.update(
+                    {
+                        "akademikKulupPdf": pdf_url,
+                        "akademikKulupPdfUsedCache": True,
+                        "akademikKulupPageUsedCache": True,
+                        "akademikKulupPdfLinkLabel": entry.get("pdfLabel", ""),
+                    }
+                )
+        if club_pdf is None:
+            items, path = find_cached_items(root, target, "club")
+            if items:
+                sources.update(
+                    {
+                        "akademikKulupPageUsedCache": True,
+                        "akademikKulupPdfUsedCache": True,
+                        "akademikKulupPdfCacheFile": str(path.relative_to(root)) if path else None,
+                    }
+                )
+                return items, sources
+            raise RuntimeError("Akademik Kulüp yerel cache'inde hedef tarih için yemek bulunamadı.")
+
+    items = extract_weekly_items(pdf_text_blocks(club_pdf), f"{target.day}.{target.month}.{target.year}")
+    if not items:
+        raise RuntimeError("Akademik Kulüp PDF'sinde hedef tarih için yemek bulunamadı.")
+    return items, sources
+
+
 def build_output(
     target: datetime,
     ana_items: list[str],
@@ -556,6 +836,7 @@ def build_output(
     errors: list[str],
     status_override: str | None = None,
     message_override: str | None = None,
+    retry_schedule: list[str] | None = None,
 ) -> dict[str, object]:
     is_weekend = target.isoweekday() >= 6
     if is_weekend:
@@ -582,13 +863,13 @@ def build_output(
         message = None
     elif status == "not_published":
         message = (
-            "Bugünün yemek listesi ESTÜ sitesinde henüz yayımlanmadı. "
-            "Sonraki otomatik kontroller Türkiye saatiyle 09:00 ve 12:00'de yapılacaktır."
+            "Bugünün yemek listesi ESTÜ sitesinde henüz yayımlanmadı veya yerel cache'te hazır değil. "
+            "Yayın günlerinde 08:03–16:03 arasında yeniden kontrol edilecektir."
         )
     else:
         message = (
-            "Menülerin bir kısmı henüz yayımlanmadı. "
-            "Sonraki otomatik kontroller Türkiye saatiyle 09:00 ve 12:00'de yapılacaktır."
+            "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. "
+            "İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir."
         )
 
     return {
@@ -599,7 +880,7 @@ def build_output(
         "weekday": target.isoweekday(),
         "isWeekend": False,
         "message": message,
-        "retrySchedule": ["06:00", "09:00", "12:00"] if status != "ok" else [],
+        "retrySchedule": retry_schedule if retry_schedule is not None else (REFRESH_TIMES if status != "ok" else []),
         "anaYemekhane": ana_items,
         "akademikKulup": club_items,
         "generatedAt": datetime.now(TIMEZONE).isoformat(timespec="seconds"),
@@ -616,81 +897,56 @@ def write_json(path: Path, value: dict[str, object]) -> None:
     )
 
 
-def collect(root: Path, target: datetime, output_path: Path) -> int:
+def collect(
+    root: Path,
+    target: datetime,
+    output_path: Path,
+    mode: str = "auto",
+) -> int:
     if target.isoweekday() >= 6:
-        write_json(output_path, build_output(target, [], [], {}, []))
-        print(f"Hafta sonu: {target.strftime('%d.%m.%Y')}; PDF indirilmeyecek.")
+        write_json(output_path, build_output(target, [], [], {}, [], retry_schedule=[]))
+        print(f"Hafta sonu: {target.strftime('%d.%m.%Y')}; ESTÜ isteği yapılmayacak.")
         return 0
 
+    state = load_source_state(root)
+    refresh_sources = decide_refresh_sources(root, target, state, mode)
     errors: list[str] = []
-    sources: dict[str, object] = {}
+    sources: dict[str, object] = {
+        "collectionMode": mode,
+        "refreshSources": sorted(refresh_sources),
+        "cacheOnly": not bool(refresh_sources),
+    }
     ana_items: list[str] = []
     club_items: list[str] = []
 
     try:
-        main_html, main_stale, main_final_url = get_cached_or_fetch(
-            root, MAIN_PAGE_URL, "pages", ".html"
+        ana_items, main_sources = collect_main_source(
+            root, target, state, "main" in refresh_sources
         )
-        main_links = extract_pdf_links(main_html, MAIN_PAGE_URL)
-        main_link = select_monthly_pdf(main_links, target)
-        sources["anaYemekhanePage"] = MAIN_PAGE_URL
-        if main_link is None:
-            raise RuntimeError("Ana yemekhane için aylık PDF bağlantısı bulunamadı.")
-        main_pdf, main_pdf_stale, main_pdf_final_url = get_pdf_cached_or_fetch(
-            root, main_link.url
-        )
-        blocks = pdf_text_blocks(main_pdf)
-        ana_items = extract_monthly_items(blocks, target.strftime("%d.%m.%Y"))
-        if not ana_items:
-            raise RuntimeError("Ana yemekhane PDF'sinde hedef tarih için yemek bulunamadı.")
-        sources.update(
-            {
-                "anaYemekhanePdf": main_link.url,
-                "anaYemekhanePageUsedCache": main_stale,
-                "anaYemekhanePdfUsedCache": main_pdf_stale,
-                "anaYemekhaneFinalPageUrl": main_final_url,
-                "anaYemekhaneFinalPdfUrl": main_pdf_final_url,
-                "anaYemekhanePdfLinkLabel": main_link.label,
-            }
-        )
+        sources.update(main_sources)
     except Exception as exc:
-        errors.append(str(exc))
+        errors.append(f"Ana yemekhane: {exc}")
 
     try:
-        club_html, club_stale, club_final_url = get_cached_or_fetch(
-            root, CLUB_PAGE_URL, "pages", ".html"
+        club_items, club_sources = collect_club_source(
+            root, target, state, "club" in refresh_sources
         )
-        club_links = extract_pdf_links(club_html, CLUB_PAGE_URL)
-        club_link = select_weekly_pdf(club_links)
-        sources["akademikKulupPage"] = CLUB_PAGE_URL
-        if club_link is None:
-            raise RuntimeError("Akademik Kulüp için haftalık PDF bağlantısı bulunamadı.")
-        club_pdf, club_pdf_stale, club_pdf_final_url = get_pdf_cached_or_fetch(
-            root, club_link.url
-        )
-        blocks = pdf_text_blocks(club_pdf)
-        club_items = extract_weekly_items(blocks, f"{target.day}.{target.month}.{target.year}")
-        if not club_items:
-            raise RuntimeError("Akademik Kulüp PDF'sinde hedef tarih için yemek bulunamadı.")
-        sources.update(
-            {
-                "akademikKulupPdf": club_link.url,
-                "akademikKulupPageUsedCache": club_stale,
-                "akademikKulupPdfUsedCache": club_pdf_stale,
-                "akademikKulupFinalPageUrl": club_final_url,
-                "akademikKulupFinalPdfUrl": club_pdf_final_url,
-                "akademikKulupPdfLinkLabel": club_link.label,
-            }
-        )
+        sources.update(club_sources)
     except Exception as exc:
-        errors.append(str(exc))
+        errors.append(f"Akademik Kulüp: {exc}")
 
-    publication_errors = [
-        error
-        for error in errors
-        if "hedef tarih" in error or "bağlantısı bulunamadı" in error
-    ]
-    all_errors_mean_not_published = bool(errors) and len(publication_errors) == len(errors)
+    if refresh_sources:
+        save_source_state(root, state)
+
+    publication_markers = (
+        "hedef tarih",
+        "bağlantısı bulunamadı",
+        "yerel cache'inde",
+    )
+    all_errors_mean_not_published = bool(errors) and all(
+        any(marker in error for marker in publication_markers) for error in errors
+    )
+    retry_schedule = REFRESH_TIMES if refresh_sources else []
 
     if not ana_items and not club_items:
         if all_errors_mean_not_published:
@@ -701,11 +957,10 @@ def collect(root: Path, target: datetime, output_path: Path) -> int:
                 sources,
                 errors,
                 status_override="not_published",
+                retry_schedule=retry_schedule,
             )
             write_json(output_path, result)
-            print(
-                f"{result['date']} için menü henüz yayımlanmadı; sonraki kontrol planlandı."
-            )
+            print(f"{result['date']} için menü henüz yayımlanmadı; cache/yenileme kontrolü tamamlandı.")
             for error in errors:
                 print(f"UYARI: {error}", file=sys.stderr)
             return 0
@@ -723,14 +978,22 @@ def collect(root: Path, target: datetime, output_path: Path) -> int:
             sources,
             errors,
             status_override="partial",
+            retry_schedule=retry_schedule,
         )
     else:
-        result = build_output(target, ana_items, club_items, sources, errors)
+        result = build_output(
+            target,
+            ana_items,
+            club_items,
+            sources,
+            errors,
+            retry_schedule=retry_schedule,
+        )
 
     write_json(output_path, result)
     print(
         f"{result['date']} menüsü yazıldı: ana={len(ana_items)}, akademik={len(club_items)}, "
-        f"durum={result['status']}"
+        f"durum={result['status']}, yenilenen={','.join(sorted(refresh_sources)) or 'yok'}"
     )
     for error in errors:
         print(f"UYARI: {error}", file=sys.stderr)
@@ -740,6 +1003,12 @@ def collect(root: Path, target: datetime, output_path: Path) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--date", help="Test veya manuel çalıştırma için GG.AA.YYYY")
+    parser.add_argument(
+        "--mode",
+        choices=("auto", "cache-only", "main", "club", "refresh"),
+        default="auto",
+        help="auto: yayın gününde ilgili kaynağı yenile; cache-only: dış istek yapma",
+    )
     parser.add_argument(
         "--output",
         default=None,
@@ -753,7 +1022,7 @@ def main() -> int:
     except ValueError as exc:
         print(f"HATA: {exc}", file=sys.stderr)
         return 2
-    return collect(root, target, output_path)
+    return collect(root, target, output_path, mode=args.mode)
 
 
 if __name__ == "__main__":
