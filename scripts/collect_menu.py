@@ -479,9 +479,13 @@ def extract_weekly_items(blocks: list[TextBlock], date_text: str) -> list[str]:
             continue
         if abs(block.group_x - target.group_x) > 0.5:
             continue
-        if block.x < -1:
-            continue
         if is_weekly_non_menu_text(block.text):
+            continue
+        if block.x < -1:
+            # PDF hücre içinde satır taşan devam metnini (ör. ÇORBASI veya PİLAVI)
+            # ayrı yemek değil, önceki öğenin devamı olarak yazabilir.
+            if items:
+                items[-1] = normalize_spaces(f"{items[-1]} {block.text}")
             continue
         items.append(block.text)
     return remove_duplicate_items(items)
