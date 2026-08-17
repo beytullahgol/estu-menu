@@ -93,7 +93,7 @@ jobs:
         env:
           REQUESTED_DATE: ${{ inputs.date }}
 
-      - name: Güncel JSON'u commit et
+      - name: Güncel JSON'u commit et ve semver tag oluştur
         if: ${{ !inputs.date }}
         run: |
           git config user.name "github-actions[bot]"
@@ -101,16 +101,29 @@ jobs:
           git add data/menu.json data/cache
           if git diff --cached --quiet; then
             echo "Menü veya cache değişmedi; yeni commit oluşturulmayacak."
+            echo "RELEASE_TAG=" >> "$GITHUB_ENV"
           else
+            TAG_NAME="v0.0.${GITHUB_RUN_NUMBER}"
+            if git show-ref --tags --quiet "refs/tags/${TAG_NAME}"; then
+              TAG_NAME="v0.0.${GITHUB_RUN_NUMBER}-attempt.${GITHUB_RUN_ATTEMPT}"
+            fi
             git commit -m "chore: güncel ESTÜ menüsünü yayımla"
-            git push
+            git tag "$TAG_NAME"
+            git push origin HEAD:main "$TAG_NAME"
+            echo "RELEASE_TAG=$TAG_NAME" >> "$GITHUB_ENV"
+            echo "Yeni CDN release tag'i: $TAG_NAME"
           fi
 
-      - name: jsDelivr cache'ini temizle
+      - name: jsDelivr alias cache'lerini temizle
         if: ${{ !inputs.date }}
         run: |
-          curl --fail --silent --show-error --location --retry 3 --max-time 30 \
-            https://purge.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json
+          for url in \
+            "https://purge.jsdelivr.net/gh/beytullahgol/estu-menu@latest/data/menu.json" \
+            "https://purge.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json"; do
+            echo "Purge: $url"
+            curl --fail --silent --show-error --location --retry 3 --max-time 30 "$url"
+            echo
+          done
 
       - name: GitHub Pages ayarını hazırla
         if: ${{ !inputs.date }}

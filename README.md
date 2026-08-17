@@ -10,10 +10,10 @@ Bu repository, Eskişehir Teknik Üniversitesi Sağlık, Kültür ve Spor Daire 
 https://raw.githubusercontent.com/beytullahgol/estu-menu/main/data/menu.json
 ```
 
-Telefon veya ağ raw GitHub adresinde `429: Too Many Requests` gösterirse aşağıdaki GCore jsDelivr adresini kullanın:
+Telefon veya ağ raw GitHub adresinde `429: Too Many Requests` gösterirse aşağıdaki GCore jsDelivr adresini kullanın. `@latest`, her başarılı production yayınında oluşturulan semver tag’ine yönelir; bu nedenle uzun süre cache’lenebilen `@main` branch aliasından daha güvenilirdir:
 
 ```text
-https://gcore.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json
+https://gcore.jsdelivr.net/gh/beytullahgol/estu-menu@latest/data/menu.json
 ```
 
 GitHub Pages adresi de alternatif olarak kullanılabilir:
@@ -22,7 +22,7 @@ GitHub Pages adresi de alternatif olarak kullanılabilir:
 https://beytullahgol.github.io/estu-menu/data/menu.json
 ```
 
-Workflow her veri değişikliğinden sonra jsDelivr purge endpointini çalıştırır. CDN güncellemesi birkaç saniye gecikirse URL’nin sonuna `?v=1` gibi bir sorgu parametresi eklenebilir. `cdn.jsdelivr.net` ve `fastly.jsdelivr.net` bölgeler arasında zaman aşımına uğrayabildiği için birincil CDN yedeği olarak GCore adresini kullanmak daha uygundur.
+Workflow her veri değişikliğinde `v0.0.<workflow-run>` biçiminde yeni bir semver tag’i oluşturur ve hem `@latest` hem de `@main` alias cache’lerini temizlemeyi dener. Kestirmeler’de fallback olarak `@latest` adresini kullanın; branch aliası eski snapshot gösterirse `@latest` güncel immutable release’e yönelir. `cdn.jsdelivr.net` ve `fastly.jsdelivr.net` bölgeler arasında zaman aşımına uğrayabildiği için GCore adresi önerilir.
 
 Repository’nin ana sayfası da bu endpoint’e bağlantı verir:
 
@@ -52,7 +52,8 @@ GitHub Actions UTC kullandığı için zamanlama Türkiye saatine yaklaşık ola
 4. Kaynak URL’leri `data/cache/source_state.json` içinde saklanır; bu dosya workflow commit’iyle korunur.
 5. PDF içindeki FlateDecode akışları, `Tj`/`TJ` metin operatörleri ve `ToUnicode` CMap eşlemeleri Python standart kütüphanesiyle çözülür.
 6. `data/menu.json` güncellenir ve yalnızca değişiklik varsa commit edilip repository’ye gönderilir.
-7. Pages’e yalnızca `site/data/menu.json` ve küçük bir bilgilendirme sayfası yayımlanır; PDF cache dosyaları Pages’e yüklenmez.
+7. Production değişikliğinde workflow ayrıca semver tag oluşturur; jsDelivr `@latest` adresi bu release’i kullanır.
+8. Pages’e yalnızca `site/data/menu.json` ve küçük bir bilgilendirme sayfası yayımlanır; PDF cache dosyaları Pages’e yüklenmez.
 
 Hafta sonu üretiminde ESTÜ isteği yapılmaz ve JSON `status: "weekend_closed"` üretir. Yeni PDF yayınlanmamışsa veya cache’te hedef gün bulunamıyorsa JSON `status: "not_published"` olur. Sadece bir yemekhane üretilebilirse `status: "partial"` yazılır. Ağ hatasında son geçerli cache korunur ve ilgili yayın günündeki sonraki kontrol yeniden dener.
 
@@ -74,7 +75,13 @@ Hafta sonu üretiminde ESTÜ isteği yapılmaz ve JSON `status: "weekend_closed"
 
 ## Kestirmeler akışı
 
-Kestirmeler’de **URL’nin İçeriğini Al** eylemine öncelikli raw GitHub adresini veya telefonda açılan CDN JSON adresini verin. Eylemin **Yöntem** seçeneği `GET`, **İstek Gövdesi** ise boş olmalıdır; `POST`, JSON gövdesi veya `menu2.php` adresi kullanılmamalıdır. Ardından **Sözlük Al** eylemini seçin. Ana yemekhane için `anaYemekhane`, Akademik Kulüp için `akademikKulup` anahtarlarından **Liste Al** ile diziyi alın. `status` değeri `weekend_closed` veya `not_published` ise doğrudan `message` alanını bildirim olarak gösterin. Raw GitHub ve jsDelivr hızlı statik dosya sunduğu için bu akış ESTÜ veya InfinityFree bot korumasına bağlı değildir. GitHub Pages yalnızca alternatif yayın adresidir.
+Kestirmeler’de **URL’nin İçeriğini Al** eylemine öncelikli raw GitHub adresini veya raw GitHub 429 döndürürse aşağıdaki güncel CDN JSON adresini verin:
+
+```text
+https://gcore.jsdelivr.net/gh/beytullahgol/estu-menu@latest/data/menu.json
+```
+
+Eylemin **Yöntem** seçeneği `GET`, **İstek Gövdesi** ise boş olmalıdır; `POST`, JSON gövdesi veya `menu2.php` adresi kullanılmamalıdır. Ardından **Sözlük Al** eylemini seçin. Ana yemekhane için `anaYemekhane`, Akademik Kulüp için `akademikKulup` anahtarlarından **Liste Al** ile diziyi alın. `status` değeri `weekend_closed` veya `not_published` ise doğrudan `message` alanını bildirim olarak gösterin. Raw GitHub ve jsDelivr hızlı statik dosya sunduğu için bu akış ESTÜ veya InfinityFree bot korumasına bağlı değildir. GitHub Pages yalnızca alternatif yayın adresidir.
 
 ## Manuel workflow testi
 
