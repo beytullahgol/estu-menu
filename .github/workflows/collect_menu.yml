@@ -118,6 +118,7 @@ jobs:
         if: ${{ !inputs.date }}
         run: |
           for url in \
+            "https://purge.jsdelivr.net/gh/beytullahgol/estu-menu/data/menu.json" \
             "https://purge.jsdelivr.net/gh/beytullahgol/estu-menu@latest/data/menu.json" \
             "https://purge.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json"; do
             echo "Purge: $url"
