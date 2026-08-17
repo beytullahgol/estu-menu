@@ -7,10 +7,16 @@ Bu repository, Eskişehir Teknik Üniversitesi Sağlık, Kültür ve Spor Daire 
 Öncelikli Kestirmeler adresi:
 
 ```text
-https://raw.githubusercontent.com/beytullahgol/estu-menu/main/data/menu.json
+https://raw.githubusercontent.com/beytullahgol/estu-menu/refs/heads/main/data/menu.json
 ```
 
-Telefon veya ağ raw GitHub adresinde `429: Too Many Requests` gösterirse aşağıdaki GCore jsDelivr adresini kullanın. Sürüm belirtilmeyen GitHub URL’si, workflow’un oluşturduğu en yeni semver release’e çözümlenir; `@main` branch aliası gibi eski branch snapshot’ına takılmaz:
+Telefon veya ağ raw GitHub adresinde `429: Too Many Requests` gösterirse aşağıdaki ücretsiz CDN adresini kullanın. Bu branch URL’si canlı kontrolde güncel JSON’u verdi:
+
+```text
+https://cdn.statically.io/gh/beytullahgol/estu-menu/main/data/menu.json
+```
+
+İkinci CDN yedeği olarak GCore adresi kullanılabilir; ancak GCore provider’ları yeni release’leri farklı hızlarda önbellekten çıkarabildiği için güncelleme anında gecikme görülebilir:
 
 ```text
 https://gcore.jsdelivr.net/gh/beytullahgol/estu-menu/data/menu.json
@@ -22,7 +28,7 @@ GitHub Pages adresi de alternatif olarak kullanılabilir:
 https://beytullahgol.github.io/estu-menu/data/menu.json
 ```
 
-Workflow her veri değişikliğinde `v0.0.<workflow-run>` biçiminde yeni bir semver tag’i oluşturur ve sürüm belirtilmeyen, `@latest` ve `@main` alias cache’lerini temizlemeyi dener. Kestirmeler’de fallback olarak sürüm belirtilmeyen GCore adresini kullanın; `cdn.jsdelivr.net` ve `fastly.jsdelivr.net` bölgeler arasında zaman aşımına uğrayabildiği için GCore adresi önerilir.
+Workflow her veri değişikliğinde `v0.0.<workflow-run>` biçiminde yeni bir semver tag’i oluşturur ve sürüm belirtilmeyen, `@latest` ve `@main` alias cache’lerini temizlemeyi dener. Kestirmeler’de fallback sırası olarak önce Statically branch adresini, sonra GCore adresini kullanın. `cdn.jsdelivr.net` ve `fastly.jsdelivr.net` bölgeler arasında zaman aşımına uğrayabildiği için doğrudan bu iki alan adı birincil CDN yedeği yapılmadı.
 
 Repository’nin ana sayfası da bu endpoint’e bağlantı verir:
 
@@ -75,7 +81,11 @@ Hafta sonu üretiminde ESTÜ isteği yapılmaz ve JSON `status: "weekend_closed"
 
 ## Kestirmeler akışı
 
-Kestirmeler’de **URL’nin İçeriğini Al** eylemine öncelikli raw GitHub adresini veya raw GitHub 429 döndürürse aşağıdaki güncel CDN JSON adresini verin:
+Kestirmeler’de **URL’nin İçeriğini Al** eylemine öncelikli raw GitHub adresini verin. Raw GitHub 429 döndürürse şu Statically CDN adresini, o da çalışmazsa GCore adresini deneyin:
+
+```text
+https://cdn.statically.io/gh/beytullahgol/estu-menu/main/data/menu.json
+```
 
 ```text
 https://gcore.jsdelivr.net/gh/beytullahgol/estu-menu/data/menu.json
@@ -100,7 +110,7 @@ https://raw.githubusercontent.com/beytullahgol/estu-menu/main/data/test/14.08.20
 Bu test URL’si Kestirmeler’de production URL’siyle aynı şekilde kullanılabilir: **URL → URL’nin İçeriğini Al (GET) → Sözlük Al**. Tarih testinin ardından iPhone’un production menüsüne dönmek için tekrar şu adresi kullanın:
 
 ```text
-https://raw.githubusercontent.com/beytullahgol/estu-menu/main/data/menu.json
+https://raw.githubusercontent.com/beytullahgol/estu-menu/refs/heads/main/data/menu.json
 ```
 
 Alan boş bırakılırsa workflow Türkiye saatine göre güncel tarihi `data/menu.json` içine yayımlar ve Pages dağıtımını yapar. Manuel tarih testi artık artifact olarak da saklanır; Actions çalıştırmasının özetindeki **Artifacts** bölümünden indirilebilir.
