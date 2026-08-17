@@ -10,20 +10,19 @@ Bu repository, Eskişehir Teknik Üniversitesi Sağlık, Kültür ve Spor Daire 
 https://raw.githubusercontent.com/beytullahgol/estu-menu/main/data/menu.json
 ```
 
-GitHub Pages adresi alternatif olarak kullanılabilir:
+Telefon veya ağ raw GitHub adresinde `429: Too Many Requests` gösterirse aşağıdaki GCore jsDelivr adresini kullanın:
+
+```text
+https://gcore.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json
+```
+
+GitHub Pages adresi de alternatif olarak kullanılabilir:
 
 ```text
 https://beytullahgol.github.io/estu-menu/data/menu.json
 ```
 
-Telefon ağı GitHub Pages alan adına erişemiyorsa aşağıdaki ücretsiz CDN adreslerinden biri kullanılabilir:
-
-```text
-https://cdn.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json
-https://fastly.jsdelivr.net/gh/beytullahgol/estu-menu@main/data/menu.json
-```
-
-Workflow her veri değişikliğinden sonra jsDelivr cache’ini temizler. CDN güncellemesi birkaç saniye gecikirse URL’nin sonuna `?v=1` gibi bir sorgu parametresi eklenebilir.
+Workflow her veri değişikliğinden sonra jsDelivr purge endpointini çalıştırır. CDN güncellemesi birkaç saniye gecikirse URL’nin sonuna `?v=1` gibi bir sorgu parametresi eklenebilir. `cdn.jsdelivr.net` ve `fastly.jsdelivr.net` bölgeler arasında zaman aşımına uğrayabildiği için birincil CDN yedeği olarak GCore adresini kullanmak daha uygundur.
 
 Repository’nin ana sayfası da bu endpoint’e bağlantı verir:
 
