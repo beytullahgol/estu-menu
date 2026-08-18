@@ -1,26 +1,27 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "17.08.2026",
-  "isoDate": "2026-08-17",
-  "weekday": 1,
+  "date": "18.08.2026",
+  "isoDate": "2026-08-18",
+  "weekday": 2,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "ŞEHRİYE ÇORBA",
-    "ETLİ NOHUT",
-    "GEMİCİ NOHUT*",
-    "PİRİNÇ PİLAVI",
-    "AYRAN"
+    "HAVUÇ ÇORBA",
+    "KIYMALI KABAK GRATEN",
+    "KAŞARLI KABAK GRATEN*",
+    "MAKARNA SALATASI",
+    "MEYVE SUYU"
   ],
   "akademikKulup": [
-    "EKŞİLİ ARAP ÇORBASI",
-    "ET FAJİTA",
-    "KÖRİ SOSLU PİLİÇ",
-    "MAKARNA (SOSLU)"
+    "KREMALI MANTAR ÇORBASI",
+    "TAS KEBABI",
+    "PİLİÇ KAVURMA",
+    "KABAK DOLMA",
+    "PİRİNÇ PİLAVI"
   ],
-  "generatedAt": "2026-08-17T19:55:29+03:00",
+  "generatedAt": "2026-08-18T08:35:59+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
