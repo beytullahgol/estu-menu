@@ -1,27 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "18.08.2026",
-  "isoDate": "2026-08-18",
-  "weekday": 2,
+  "date": "19.08.2026",
+  "isoDate": "2026-08-19",
+  "weekday": 3,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "HAVUÇ ÇORBA",
-    "KIYMALI KABAK GRATEN",
-    "KAŞARLI KABAK GRATEN*",
-    "MAKARNA SALATASI",
-    "MEYVE SUYU"
+    "MANTI ÇORBA",
+    "HASANPAŞA KÖFTE (PÜRELİ)",
+    "BAMYA YEMEĞİ*",
+    "BULGUR PİLAVI",
+    "TRİLEÇE"
   ],
   "akademikKulup": [
-    "KREMALI MANTAR ÇORBASI",
-    "TAS KEBABI",
-    "PİLİÇ KAVURMA",
-    "KABAK DOLMA",
-    "PİRİNÇ PİLAVI"
+    "ACILI TAV.SUYU ÇORBASI",
+    "HÜNKAR BEĞENDİ",
+    "PİLİÇ MEKSIKA",
+    "KUSKUS"
   ],
-  "generatedAt": "2026-08-18T08:35:59+03:00",
+  "generatedAt": "2026-08-19T08:36:54+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
