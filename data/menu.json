@@ -1,39 +1,15 @@
 {
   "ok": true,
-  "status": "ok",
-  "date": "21.08.2026",
-  "isoDate": "2026-08-21",
-  "weekday": 5,
-  "isWeekend": false,
-  "message": null,
+  "status": "weekend_closed",
+  "date": "22.08.2026",
+  "isoDate": "2026-08-22",
+  "weekday": 6,
+  "isWeekend": true,
+  "message": "Bugün hafta sonu, yemekhaneler kapalı.",
   "retrySchedule": [],
-  "anaYemekhane": [
-    "EZOGELİN ÇORBA",
-    "KIYMALI BİBER DOLMA",
-    "ZY. BİBER DOLMA*",
-    "YOĞURT",
-    "KIBRIS TATLISI"
-  ],
-  "akademikKulup": [
-    "SOĞUK AYRAN AŞI ÇORBASI",
-    "İZMİR KÖFTE",
-    "ÇITIR PİLİÇ",
-    "ARPA ŞEHRIYE PİLAVI"
-  ],
-  "generatedAt": "2026-08-21T08:38:27+03:00",
-  "sources": {
-    "collectionMode": "auto",
-    "refreshSources": [],
-    "cacheOnly": true,
-    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
-    "anaYemekhanePageUsedCache": true,
-    "anaYemekhanePdfUsedCache": true,
-    "anaYemekhanePdfCacheFile": "data/cache/pdfs/825ae4dce048b96106af5e400eec137ce5f4d6fc.pdf",
-    "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
-    "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_08_17.pdf",
-    "akademikKulupPdfUsedCache": true,
-    "akademikKulupPageUsedCache": true,
-    "akademikKulupPdfLinkLabel": "Ağustos Akademik Kulüp Haftalık Menü"
-  },
+  "anaYemekhane": [],
+  "akademikKulup": [],
+  "generatedAt": "2026-08-22T08:33:33+03:00",
+  "sources": {},
   "errors": []
 }
