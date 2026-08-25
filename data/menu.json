@@ -1,26 +1,27 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "24.08.2026",
-  "isoDate": "2026-08-24",
-  "weekday": 1,
+  "date": "25.08.2026",
+  "isoDate": "2026-08-25",
+  "weekday": 2,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "TERBİYELİ ŞEHRİYE ÇORBA",
-    "SOSLU ET DÖNER+GARN.",
-    "ZY. BROKOLİ*",
-    "BULGUR PİLAVI",
-    "AYRAN"
+    "MERCİMEK ÇORBA",
+    "+Garn.",
+    "HÜNKAR BEĞENDİ",
+    "YOĞURTLU ISPANAK*",
+    "SOSLU MAKARNA",
+    "SÜTLAÇ"
   ],
   "akademikKulup": [
-    "YAYLA ÇORBASI",
-    "KARIŞIK IZGARA",
-    "SOYA SOSLU PİLİÇ",
-    "PİRİNÇ PİLAVI (MISIRLI)"
+    "EZOGELİN ÇORBASI",
+    "KAĞIT KEBABI KEBABI",
+    "KABAK ÇİRPMA",
+    "ERİŞTE"
   ],
-  "generatedAt": "2026-08-24T16:57:04+03:00",
+  "generatedAt": "2026-08-25T08:37:40+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
