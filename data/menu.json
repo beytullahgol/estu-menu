@@ -1,27 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "25.08.2026",
-  "isoDate": "2026-08-25",
-  "weekday": 2,
+  "date": "26.08.2026",
+  "isoDate": "2026-08-26",
+  "weekday": 3,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "MERCİMEK ÇORBA",
-    "+Garn.",
-    "HÜNKAR BEĞENDİ",
-    "YOĞURTLU ISPANAK*",
-    "SOSLU MAKARNA",
-    "SÜTLAÇ"
+    "SEBZE ÇORBA",
+    "KIYMALI BEZELYE YEMEĞİ",
+    "BEZELYE YEMEĞİ*",
+    "PİRİNÇ PİLAVI",
+    "MEYVE"
   ],
   "akademikKulup": [
-    "EZOGELİN ÇORBASI",
-    "KAĞIT KEBABI KEBABI",
-    "KABAK ÇİRPMA",
-    "ERİŞTE"
+    "SEBZELİ TAVUK SUYU ÇORBASI",
+    "ÇOBAN KAVURMA",
+    "PİLİÇ TİKA",
+    "BULGUR PİLAVI"
   ],
-  "generatedAt": "2026-08-25T08:37:40+03:00",
+  "generatedAt": "2026-08-26T08:40:07+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
