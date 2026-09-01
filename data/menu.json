@@ -1,40 +1,52 @@
 {
   "ok": true,
-  "status": "ok",
-  "date": "31.08.2026",
-  "isoDate": "2026-08-31",
-  "weekday": 1,
+  "status": "partial",
+  "date": "01.09.2026",
+  "isoDate": "2026-09-01",
+  "weekday": 2,
   "isWeekend": false,
-  "message": null,
-  "retrySchedule": [],
-  "anaYemekhane": [
-    "TARHANA ÇORBA",
-    "MANTI (SOS+YOĞURT)",
-    "YOĞURTLU KARNABAHAR KIZ.*",
-    "KISIR",
-    "MEYVE",
-    "*ETSİZ"
+  "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
+  "retrySchedule": [
+    "08:03",
+    "08:33",
+    "09:03",
+    "09:33",
+    "10:03",
+    "10:33",
+    "11:03",
+    "11:33",
+    "12:03",
+    "12:33",
+    "13:03",
+    "13:33",
+    "14:03",
+    "14:33",
+    "15:03",
+    "15:33",
+    "16:03"
   ],
+  "anaYemekhane": [],
   "akademikKulup": [
-    "MANTI ÇORBASI",
-    "BUĞU KEBABI",
-    "MANTAR SOSLU PİLİÇ IZGARA",
-    "MEYHANE PİLAVI"
+    "KUZU TANDIR ÇORBA",
+    "HÜNKAR BEĞENDİ",
+    "PİLİÇ TAKINA",
+    "TAZE FASÜLYE",
+    "ARPA ŞEHRIYE PİLAVI"
   ],
-  "generatedAt": "2026-08-31T22:28:47+03:00",
+  "generatedAt": "2026-09-01T12:56:53+03:00",
   "sources": {
     "collectionMode": "auto",
-    "refreshSources": [],
-    "cacheOnly": true,
-    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
-    "anaYemekhanePageUsedCache": true,
-    "anaYemekhanePdfUsedCache": true,
-    "anaYemekhanePdfCacheFile": "data/cache/pdfs/825ae4dce048b96106af5e400eec137ce5f4d6fc.pdf",
+    "refreshSources": [
+      "main"
+    ],
+    "cacheOnly": false,
     "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
     "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_08_31(1).pdf",
     "akademikKulupPdfUsedCache": true,
     "akademikKulupPageUsedCache": true,
     "akademikKulupPdfLinkLabel": "Eylül Akademik Kulüp Haftalık Menü"
   },
-  "errors": []
+  "errors": [
+    "Ana yemekhane: Ana yemekhane PDF'sinde hedef tarih için yemek bulunamadı."
+  ]
 }

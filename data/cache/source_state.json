@@ -1,5 +1,11 @@
 {
-  "anaYemekhane": {},
+  "anaYemekhane": {
+    "pageUrl": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
+    "pdfUrl": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/EYL%c3%9cL%2026%20MEN%c3%9c%20(SON).pdf",
+    "pdfLabel": "Yemek Menüsü (Eylül-2026)",
+    "finalPageUrl": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
+    "finalPdfUrl": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/EYL%c3%9cL%2026%20MEN%c3%9c%20(SON).pdf"
+  },
   "akademikKulup": {
     "pageUrl": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
     "pdfUrl": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_08_31(1).pdf",
