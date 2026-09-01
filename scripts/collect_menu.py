@@ -440,7 +440,9 @@ def extract_monthly_items(blocks: list[TextBlock], date_text: str) -> list[str]:
 
     next_date_y = -math.inf
     for block in blocks:
-        if block.y < target.y and re.search(r"\d{2}\.\d{2}\.\d{4}", block.text):
+        # Aynı satırdaki (Y farkı < 10) tarihleri görmezden gel, 
+        # bir sonraki haftanın/satırın tarihini bul.
+        if block.y < target.y - 10 and re.search(r"\d{2}\.\d{2}\.\d{4}", block.text):
             next_date_y = max(next_date_y, block.y)
 
     items: list[str] = []
@@ -450,6 +452,11 @@ def extract_monthly_items(blocks: list[TextBlock], date_text: str) -> list[str]:
         if block.y >= target.y - 0.1 or block.y <= next_date_y + 0.2:
             continue
         if is_monthly_non_menu_text(block.text) or re.search(r"\d{2}\.\d{2}\.\d{4}", block.text):
+            continue
+        if block.x < -1:
+            # PDF hücre içinde satır taşan devam metnini birleştir.
+            if items:
+                items[-1] = normalize_spaces(f"{items[-1]} {block.text}")
             continue
         items.append(block.text)
     return remove_duplicate_items(items)
