@@ -1,27 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "01.09.2026",
-  "isoDate": "2026-09-01",
-  "weekday": 2,
+  "date": "02.09.2026",
+  "isoDate": "2026-09-02",
+  "weekday": 3,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "DOMATES ÇORBA",
-    "KIYMALI FIRIN KARNABAHAR",
-    "FIRIN KARNABAHAR*",
-    "YOĞURTLU BUĞDAY SALATASI",
-    "MEYVE SUYU"
+    "MERCİMEK ÇORBA",
+    "PATLICAN MUSAKKA",
+    "KAŞARLI PATLICAN MUSAKKA*",
+    "NOHUTLU PİRİNÇ PİLAVI",
+    "CACIK"
   ],
   "akademikKulup": [
-    "KUZU TANDIR ÇORBA",
-    "HÜNKAR BEĞENDİ",
-    "PİLİÇ TAKINA",
-    "TAZE FASÜLYE",
-    "ARPA ŞEHRIYE PİLAVI"
+    "ŞEHRIYELİ TAVUK SUYU ÇORBASI",
+    "ÇÖKERTME KEBABI",
+    "PİLİÇ ROSTO",
+    "KUSKUS"
   ],
-  "generatedAt": "2026-09-01T20:20:14+03:00",
+  "generatedAt": "2026-09-02T12:25:09+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
