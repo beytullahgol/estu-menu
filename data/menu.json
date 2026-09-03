@@ -1,26 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "02.09.2026",
-  "isoDate": "2026-09-02",
-  "weekday": 3,
+  "date": "03.09.2026",
+  "isoDate": "2026-09-03",
+  "weekday": 4,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "MERCİMEK ÇORBA",
-    "PATLICAN MUSAKKA",
-    "KAŞARLI PATLICAN MUSAKKA*",
-    "NOHUTLU PİRİNÇ PİLAVI",
-    "CACIK"
+    "BROKOLİ ÇORBA",
+    "İZMİR KÖFTE",
+    "YEŞİL MERCİMEK YEMEĞİ*",
+    "BULGUR PİLAVI",
+    "ISLAK KEK"
   ],
   "akademikKulup": [
-    "ŞEHRIYELİ TAVUK SUYU ÇORBASI",
-    "ÇÖKERTME KEBABI",
-    "PİLİÇ ROSTO",
-    "KUSKUS"
+    "ERİŞTELİ YEŞİL MERCİMEK ÇORBASI",
+    "DANA YAHNİ",
+    "NOHUT YEMEĞİ",
+    "PİRİNÇ PİLAVI"
   ],
-  "generatedAt": "2026-09-02T12:25:09+03:00",
+  "generatedAt": "2026-09-03T12:35:26+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
