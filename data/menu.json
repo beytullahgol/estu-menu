@@ -1,26 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "03.09.2026",
-  "isoDate": "2026-09-03",
-  "weekday": 4,
+  "date": "04.09.2026",
+  "isoDate": "2026-09-04",
+  "weekday": 5,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "BROKOLİ ÇORBA",
-    "İZMİR KÖFTE",
-    "YEŞİL MERCİMEK YEMEĞİ*",
-    "BULGUR PİLAVI",
-    "ISLAK KEK"
+    "KREMALI MANTAR ÇORBA",
+    "ÇITIR TAVUK+PATATES PÜRESİ",
+    "SEBZE SOTE*",
+    "SOSLU MAKARNA",
+    "AYRAN"
   ],
   "akademikKulup": [
-    "ERİŞTELİ YEŞİL MERCİMEK ÇORBASI",
-    "DANA YAHNİ",
-    "NOHUT YEMEĞİ",
-    "PİRİNÇ PİLAVI"
+    "SOĞUK AYRAN AŞI ÇORBASI",
+    "AKÇAABAT KÖFTE",
+    "PİLİÇ KAVURMA",
+    "ERİŞTE"
   ],
-  "generatedAt": "2026-09-03T12:35:26+03:00",
+  "generatedAt": "2026-09-04T12:27:40+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
