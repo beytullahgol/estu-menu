@@ -1,40 +1,15 @@
 {
   "ok": true,
-  "status": "ok",
-  "date": "04.09.2026",
-  "isoDate": "2026-09-04",
-  "weekday": 5,
-  "isWeekend": false,
-  "message": null,
+  "status": "weekend_closed",
+  "date": "05.09.2026",
+  "isoDate": "2026-09-05",
+  "weekday": 6,
+  "isWeekend": true,
+  "message": "Bugün hafta sonu, yemekhaneler kapalı.",
   "retrySchedule": [],
-  "anaYemekhane": [
-    "KREMALI MANTAR ÇORBA",
-    "ÇITIR TAVUK+PATATES PÜRESİ",
-    "SEBZE SOTE*",
-    "SOSLU MAKARNA",
-    "AYRAN"
-  ],
-  "akademikKulup": [
-    "SOĞUK AYRAN AŞI ÇORBASI",
-    "AKÇAABAT KÖFTE",
-    "PİLİÇ KAVURMA",
-    "ERİŞTE"
-  ],
-  "generatedAt": "2026-09-04T12:27:40+03:00",
-  "sources": {
-    "collectionMode": "auto",
-    "refreshSources": [],
-    "cacheOnly": true,
-    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
-    "anaYemekhanePdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/EYL%c3%9cL%2026%20MEN%c3%9c%20(SON).pdf",
-    "anaYemekhanePdfUsedCache": true,
-    "anaYemekhanePageUsedCache": true,
-    "anaYemekhanePdfLinkLabel": "Yemek Menüsü (Eylül-2026)",
-    "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
-    "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_08_31(1).pdf",
-    "akademikKulupPdfUsedCache": true,
-    "akademikKulupPageUsedCache": true,
-    "akademikKulupPdfLinkLabel": "Eylül Akademik Kulüp Haftalık Menü"
-  },
+  "anaYemekhane": [],
+  "akademikKulup": [],
+  "generatedAt": "2026-09-05T11:55:23+03:00",
+  "sources": {},
   "errors": []
 }
