@@ -1,28 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "08.09.2026",
-  "isoDate": "2026-09-08",
-  "weekday": 2,
+  "date": "09.09.2026",
+  "isoDate": "2026-09-09",
+  "weekday": 3,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "KÖYLÜ ÇORBA",
-    "100gr+",
-    "Garn",
-    "MANTAR SOTE*",
-    "SOSLU SPAGETTİ",
-    "AKDENİZ SALATA"
+    "TARHANA ÇORBA",
+    "KURU KÖFTE+GARN.",
+    "ZY. TAZE FASULYE*",
+    "PEYNİRLİ SU BÖREĞİ",
+    "HAVUÇ TARATOR"
   ],
   "akademikKulup": [
-    "DOMATES ÇORBASI",
-    "TAS KEBABI",
-    "BEĞENDİL PİLİÇ",
-    "KABAK MUSAKKA",
-    "PİRİNÇ PİLAVI (ARPA ŞEHRIYELİ)"
+    "MENGEN ÇORBASI",
+    "ET FAJİTA",
+    "SOYA SOSLU PİLİÇ",
+    "BULGUR PİLAVI"
   ],
-  "generatedAt": "2026-09-08T12:30:00+03:00",
+  "generatedAt": "2026-09-09T12:33:12+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
