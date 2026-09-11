@@ -1,27 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "10.09.2026",
-  "isoDate": "2026-09-10",
-  "weekday": 4,
+  "date": "11.09.2026",
+  "isoDate": "2026-09-11",
+  "weekday": 5,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "YAYLA ÇORBASI",
-    "TAVUKLU ELBASAN TAVA",
-    "ZY. KARNABAHAR*",
-    "CEVİZLİ ERİŞTE",
-    "MEYVE"
+    "TOYGA ÇORBA",
+    "KIYMALI BEZELYE YEMEĞİ",
+    "BEZELYE YEMEĞİ*",
+    "ŞEHRİYELİ PİRİNÇ PİLAVI",
+    "SUPANGLE"
   ],
   "akademikKulup": [
-    "PRENSES ÇORBASI",
-    "İZGARA ANTRİKOT",
-    "ROMA USULÜ PİLİÇ",
-    "BARBUNYA",
-    "PİRİNÇ PİLAVI"
+    "SOĞUK AYRAN AŞI ÇORBASI",
+    "PİLİÇ KÜLBASTI",
+    "KAŞARLI İZGARA KÖFTE",
+    "KUSKUS"
   ],
-  "generatedAt": "2026-09-10T12:32:15+03:00",
+  "generatedAt": "2026-09-11T12:29:14+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
