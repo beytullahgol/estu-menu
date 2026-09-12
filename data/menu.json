@@ -1,40 +1,15 @@
 {
   "ok": true,
-  "status": "ok",
-  "date": "11.09.2026",
-  "isoDate": "2026-09-11",
-  "weekday": 5,
-  "isWeekend": false,
-  "message": null,
+  "status": "weekend_closed",
+  "date": "12.09.2026",
+  "isoDate": "2026-09-12",
+  "weekday": 6,
+  "isWeekend": true,
+  "message": "Bugün hafta sonu, yemekhaneler kapalı.",
   "retrySchedule": [],
-  "anaYemekhane": [
-    "TOYGA ÇORBA",
-    "KIYMALI BEZELYE YEMEĞİ",
-    "BEZELYE YEMEĞİ*",
-    "ŞEHRİYELİ PİRİNÇ PİLAVI",
-    "SUPANGLE"
-  ],
-  "akademikKulup": [
-    "SOĞUK AYRAN AŞI ÇORBASI",
-    "PİLİÇ KÜLBASTI",
-    "KAŞARLI İZGARA KÖFTE",
-    "KUSKUS"
-  ],
-  "generatedAt": "2026-09-11T12:29:14+03:00",
-  "sources": {
-    "collectionMode": "auto",
-    "refreshSources": [],
-    "cacheOnly": true,
-    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
-    "anaYemekhanePdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/EYL%c3%9cL%2026%20MEN%c3%9c%20(SON).pdf",
-    "anaYemekhanePdfUsedCache": true,
-    "anaYemekhanePageUsedCache": true,
-    "anaYemekhanePdfLinkLabel": "Yemek Menüsü (Eylül-2026)",
-    "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
-    "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_09_07(1).pdf",
-    "akademikKulupPdfUsedCache": true,
-    "akademikKulupPageUsedCache": true,
-    "akademikKulupPdfLinkLabel": "Eylül Akademik Kulüp Haftalık Menü"
-  },
+  "anaYemekhane": [],
+  "akademikKulup": [],
+  "generatedAt": "2026-09-12T12:09:46+03:00",
+  "sources": {},
   "errors": []
 }
