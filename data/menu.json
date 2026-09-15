@@ -1,26 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "14.09.2026",
-  "isoDate": "2026-09-14",
-  "weekday": 1,
+  "date": "15.09.2026",
+  "isoDate": "2026-09-15",
+  "weekday": 2,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "EZOGELİN ÇORBA",
-    "MANTI (SOS+YOĞURT)",
-    "ZY. BRÜKSEL LAHANA*",
-    "PATLICAN SALATASI",
-    "GAZOZ"
+    "DOMATES ÇORBA",
+    "ETLİ BAMYA YEMEĞİ",
+    "ZY. BAMYA YEMEĞİ*",
+    "FIRIN MAKARNA",
+    "MEYVE"
   ],
   "akademikKulup": [
-    "EZOGELİN ÇORBASI",
-    "HUMUSLU KEBAP",
-    "MANTAR SOSLU PİLİÇ IZGARA",
-    "ARPA ŞEHRIYE PİLAVI"
+    "LEBENİYE ÇORBASI",
+    "BONFILE İZGARA",
+    "SEBZELİ PİLİÇ HAŞLAMA",
+    "BULGUR PİLAVI"
   ],
-  "generatedAt": "2026-09-14T21:32:07+03:00",
+  "generatedAt": "2026-09-15T11:19:57+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
