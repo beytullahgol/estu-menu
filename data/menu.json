@@ -1,27 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "17.09.2026",
-  "isoDate": "2026-09-17",
-  "weekday": 4,
+  "date": "18.09.2026",
+  "isoDate": "2026-09-18",
+  "weekday": 5,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "VİTAMİN ÇORBA",
-    "KIYMALI LAZANYA",
-    "YEŞİL MERCİMEK YEMEĞİ*",
-    "KABAK TARATOR",
-    "MEYVE SUYU"
+    "TERBİYELİ ŞEHRİYE ÇORBA",
+    "SEBZELİ HİNDİ SOTE+PATATES PÜRE",
+    "FIRIN MÜCVER*",
+    "KREMALI MAKARNA",
+    "PİYAZ"
   ],
   "akademikKulup": [
-    "TARHANA ÇORBASI",
-    "FIRINDA MANTARLI BİFTEK",
-    "PİLİÇ QUESEDİLLA",
-    "KURU FASÜLYE",
-    "PİRİNÇ PİLAVI (TEREYAĞLI)"
+    "SOĞUK AYRAN AŞI ÇORBASI",
+    "SİVAS SATIR KÖFTESİ",
+    "TEX-MEX SOSLU PİLİÇ",
+    "KUSKUS"
   ],
-  "generatedAt": "2026-09-17T12:55:23+03:00",
+  "generatedAt": "2026-09-18T12:34:01+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
