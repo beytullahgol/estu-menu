@@ -1,26 +1,27 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "21.09.2026",
-  "isoDate": "2026-09-21",
-  "weekday": 1,
+  "date": "22.09.2026",
+  "isoDate": "2026-09-22",
+  "weekday": 2,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "KREMALI MANTAR ÇORBA",
-    "ETLİ TAZE FASULYE",
-    "ZY. TAZE FASULYE*",
-    "PİRİNÇ PİLAVI",
-    "AYRAN"
+    "MERCİMEK ÇORBA",
+    "KIYMALI PATATES OTURTMA",
+    "KAŞARLI PATATES OTURTMA*",
+    "BULGUR PİLAVI",
+    "MEYVE"
   ],
   "akademikKulup": [
-    "YAYLA ÇORBASI",
-    "ÇOBAN KAVURMA",
-    "SOYA SOSLU PİLİÇ",
-    "PİRİNÇ PİLAVI (TEREYAĞLI)"
+    "DOMATES ÇORBASI",
+    "İZGARA ANTRİKOT",
+    "CAFE DE PARİS SOSLU PİLİÇ",
+    "BAMYA YEMEĞİ",
+    "BULGUR PİLAVI"
   ],
-  "generatedAt": "2026-09-21T21:36:53+03:00",
+  "generatedAt": "2026-09-22T11:40:38+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
