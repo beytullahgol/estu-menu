@@ -16,7 +16,9 @@ import html as html_lib
 import json
 import math
 import re
+import subprocess
 import sys
+import tempfile
 import zlib
 from dataclasses import dataclass
 from datetime import datetime
@@ -422,6 +424,167 @@ def remove_duplicate_items(items: Iterable[str]) -> list[str]:
     return output
 
 
+DATE_RE = re.compile(r"(?<!\d)(\d{1,2})\.(\d{1,2})\.(\d{4})(?!\d)")
+
+
+def pdftotext_layout(pdf_data: bytes) -> list[str]:
+    """PDF'i Poppler'ın grid koruyan metin çıktısına çevirir.
+
+    Koordinat parser'ının aksine bu katman PDF üreticisinin nesne sırasına değil,
+    kullanıcıya görünen satır/kolon düzenine dayanır. pdftotext mevcut değilse
+    hata kontrollü biçimde üst katmana aktarılır.
+    """
+    with tempfile.NamedTemporaryFile(suffix=".pdf") as pdf_file:
+        pdf_file.write(pdf_data)
+        pdf_file.flush()
+        try:
+            result = subprocess.run(
+                ["pdftotext", "-layout", "-enc", "UTF-8", pdf_file.name, "-"],
+                check=True,
+                capture_output=True,
+                timeout=30,
+            )
+        except FileNotFoundError as exc:
+            raise RuntimeError("pdftotext bulunamadı; Poppler kurulmalıdır.") from exc
+        except subprocess.CalledProcessError as exc:
+            detail = exc.stderr.decode("utf-8", errors="replace").strip()
+            raise RuntimeError(f"pdftotext başarısız: {detail or 'bilinmeyen hata'}") from exc
+        except subprocess.TimeoutExpired as exc:
+            raise RuntimeError("pdftotext zaman aşımına uğradı.") from exc
+    return result.stdout.decode("utf-8", errors="replace").splitlines()
+
+
+def clean_grid_cell(value: str, source: str) -> str:
+    """Bir grid hücresinden miktar, kalori, fiyat ve tasarım metnini ayırır."""
+    value = normalize_spaces(value)
+    if not value:
+        return ""
+    if source == "weekly":
+        value = re.sub(r"\s+\d+(?:[.,]\d+)?\s*kcal\b", "", value, flags=re.I)
+        value = re.sub(r"\s+\d+(?:[.,]\d+)?\s*(?:₺|TL)", "", value, flags=re.I)
+        value = re.sub(r"\s+\d+(?:[.,]\d+)?\s*", " ", value)
+    else:
+        value = re.sub(r"\s+\d+(?:[.,]\d+)?\s*(?:gr\.?|ml\.?)", "", value, flags=re.I)
+        value = re.sub(r"\s+\d+(?:[.,]\d+)?\s*$", "", value)
+    value = re.sub(r"\s+", " ", value).strip()
+    if not value or re.fullmatch(r"[+\-]?Garn\.?", value, re.I):
+        return value
+    if re.search(
+        r"SERVİS SAATİ|MİKTAR|KALORİ|TARİHLİ HAFTALIK MENÜ|GENEL YEMEK MENÜSÜ|"
+        r"PAZARTESİ|SALI|ÇARŞAMBA|PERŞEMBE|CUMA|CUMARTESİ|PAZAR",
+        value,
+        re.I,
+    ):
+        return ""
+    return value
+
+
+def grid_columns(line: str, target: datetime, source: str) -> tuple[int, list[int]] | None:
+    """Tarih başlığından hedef kolonun ve kolon başlangıçlarının indeksini bulur."""
+    matches = list(DATE_RE.finditer(line))
+    if not matches:
+        return None
+    if source == "weekly" and len(matches) < 5:
+        return None
+    target_matches = [
+        index for index, match in enumerate(matches)
+        if (int(match.group(1)), int(match.group(2)), int(match.group(3)))
+        == (target.day, target.month, target.year)
+    ]
+    if not target_matches:
+        return None
+    return target_matches[0], [match.start() for match in matches]
+
+
+def extract_grid_items(pdf_data: bytes, target: datetime, source: str) -> list[str]:
+    """Tarih başlıklarından kolonları öğrenerek günlük menüyü çıkarır."""
+    lines = pdftotext_layout(pdf_data)
+    header_index = -1
+    target_column = -1
+    starts: list[int] = []
+    for index, line in enumerate(lines):
+        found = grid_columns(line, target, source)
+        if found is not None:
+            target_column, starts = found
+            header_index = index
+            break
+    if header_index < 0:
+        return []
+
+    # Aylık PDF'in sonraki haftası yeni tarih başlığıyla, haftalık PDF'in menüsü
+    # ise servis saati/ikinci sabit tabloyla biter.
+    end_index = len(lines)
+    for index in range(header_index + 1, len(lines)):
+        if DATE_RE.search(lines[index]):
+            end_index = index
+            break
+        if source == "weekly" and re.search(r"SERVİS SAATİMİZ", lines[index], re.I):
+            end_index = index
+            break
+
+    chunks: list[tuple[str, bool]] = []
+    for line in lines[header_index + 1:end_index]:
+        if source == "weekly":
+            records = list(re.finditer(
+                r"(.+?)\s+\d+(?:[.,]\d+)?\s*kcal\s+\d+(?:[.,]\d+)?\s*(?:₺|TL)",
+                line,
+                re.IGNORECASE,
+            ))
+        else:
+            records = list(re.finditer(
+                r"(.+?)\s+\d+(?:[.,]\d+)?\s*(?:gr\.?|ml\.?)\s+\d+(?:[.,]\d+)?",
+                line,
+                re.IGNORECASE,
+            ))
+        left_boundary = (
+            (starts[target_column - 1] + starts[target_column]) / 2
+            if target_column > 0
+            else -1
+        )
+        right_boundary = (
+            (starts[target_column] + starts[target_column + 1]) / 2
+            if target_column + 1 < len(starts)
+            else float("inf")
+        )
+        target_records = [
+            record for record in records
+            if left_boundary <= record.start() < right_boundary
+        ]
+        if target_records:
+            cell = clean_grid_cell(target_records[0].group(1), source)
+            if cell and not DATE_RE.search(cell):
+                chunks.append((cell, True))
+            continue
+
+        # Bazı PDF hücreleri bir yemek adını iki satıra böler ve ikinci satıra
+        # miktar/kalori yazmaz (örn. SOĞUK AYRAN AŞI / ÇORBASI). Yalnızca bu
+        # durumda, tarih başlığından öğrenilen kolonda kalan kısa metni ekle.
+        if target_column < len(starts):
+            start = max(0, int(left_boundary))
+            stop = min(len(line), int(right_boundary)) if right_boundary != float("inf") else len(line)
+            continuation = clean_grid_cell(line[start:stop], source)
+            if (
+                continuation
+                and len(continuation) <= 24
+                and not DATE_RE.search(continuation)
+                and not re.search(r"\d|₺|\bTL\b|\bkcal\b", continuation, re.I)
+            ):
+                chunks.append((continuation, False))
+
+    # Satır taşmaları (ör. SOĞUK AYRAN AŞI / ÇORBASI) aynı hücredeki ardışık
+    # parçalar olmalıdır; miktar/kalori içermeyen kısa parçalar da korunur.
+    items: list[str] = []
+    for chunk, is_record in chunks:
+        if items and not is_record and (
+            chunk.casefold() in {"çorbasi", "çorbası", "pilavı", "pilavi"}
+            or chunk.casefold().endswith(("çorbasi", "çorbası"))
+        ):
+            items[-1] = normalize_spaces(f"{items[-1]} {chunk}")
+        else:
+            items.append(chunk)
+    return remove_duplicate_items(items)
+
+
 def is_monthly_non_menu_text(text: str) -> bool:
     if not text:
         return True
@@ -629,18 +792,10 @@ def cached_pdf_candidates(root: Path) -> list[Path]:
 
 
 def find_cached_items(root: Path, target: datetime, source: str) -> tuple[list[str], Path | None]:
-    date_text = (
-        target.strftime("%d.%m.%Y")
-        if source == "main"
-        else f"{target.day}.{target.month}.{target.year}"
-    )
     for path in cached_pdf_candidates(root):
         try:
-            blocks = pdf_text_blocks(path.read_bytes())
-            items = (
-                extract_monthly_items(blocks, date_text)
-                if source == "main"
-                else extract_weekly_items(blocks, date_text)
+            items = extract_grid_items(
+                path.read_bytes(), target, "monthly" if source == "main" else "weekly"
             )
             if items:
                 return items, path
@@ -757,7 +912,7 @@ def collect_main_source(
                 return items, sources
             raise RuntimeError("Ana yemekhane yerel cache'inde hedef tarih için yemek bulunamadı.")
 
-    items = extract_monthly_items(pdf_text_blocks(main_pdf), target.strftime("%d.%m.%Y"))
+    items = extract_grid_items(main_pdf, target, "monthly")
     if not items:
         # Eski source_state URL’si kalmış olabilir; yerel cache’teki diğer PDF’leri
         # ağ isteği yapmadan son kez tara.
@@ -833,7 +988,7 @@ def collect_club_source(
                 return items, sources
             raise RuntimeError("Akademik Kulüp yerel cache'inde hedef tarih için yemek bulunamadı.")
 
-    items = extract_weekly_items(pdf_text_blocks(club_pdf), f"{target.day}.{target.month}.{target.year}")
+    items = extract_grid_items(club_pdf, target, "weekly")
     if not items:
         raise RuntimeError("Akademik Kulüp PDF'sinde hedef tarih için yemek bulunamadı.")
     return items, sources

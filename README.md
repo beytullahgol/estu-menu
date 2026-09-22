@@ -56,10 +56,20 @@ GitHub Actions UTC kullandığı için zamanlama Türkiye saatine yaklaşık ola
 2. Yenileme kümesi boşsa yalnızca `data/cache/pdfs` içindeki PDF’ler taranır; ESTÜ’ye ağ isteği yapılmaz.
 3. Yenileme gerekiyorsa yalnızca ilgili HTML sayfası alınır ve yeni PDF bağlantısı aranır. Aynı PDF URL’si `data/cache` içinde bulunuyorsa PDF yeniden indirilmez.
 4. Kaynak URL’leri `data/cache/source_state.json` içinde saklanır; bu dosya workflow commit’iyle korunur.
-5. PDF içindeki FlateDecode akışları, `Tj`/`TJ` metin operatörleri ve `ToUnicode` CMap eşlemeleri Python standart kütüphanesiyle çözülür.
+5. V2 parser PDF’i `pdftotext -layout` ile görünür grid’e çevirir. Hedef tarih başlığındaki tarihlerin karakter konumlarından kolonlar dinamik olarak çıkarılır; miktar/kalori kayıtları orta nokta kolon sınırlarıyla seçilir. Böylece PDF nesne koordinatlarına bağlı önceki gün kayması ortadan kaldırılır. Eski düşük seviye PDF ayrıştırma kodu geriye dönük uyumluluk için dosyada tutulur, üretim akışında kullanılmaz.
 6. `data/menu.json` güncellenir ve yalnızca değişiklik varsa commit edilip repository’ye gönderilir.
 7. Production değişikliğinde workflow ayrıca semver tag oluşturur; jsDelivr `@latest` adresi bu release’i kullanır.
 8. Pages’e yalnızca `site/data/menu.json` ve küçük bir bilgilendirme sayfası yayımlanır; PDF cache dosyaları Pages’e yüklenmez.
+
+## V2 parser doğrulaması
+
+Yerel regresyon testi, bilinen problemli Ağustos 2026 aylık ve haftalık PDF’lerini kullanır. Test; 14 Ağustos menüsündeki tüm yemekleri, haftalık PDF’de satıra taşan `SOĞUK AYRAN AŞI / ÇORBASI` adını ve her iki PDF’deki tüm menü günlerini doğrular:
+
+```bash
+python scripts/test_parser_v2.py
+```
+
+Çalışma ortamında Poppler’ın `pdftotext` komutu bulunmalıdır. GitHub’ın Ubuntu runner’ında bu komut hazırdır; parser komut bulunamadığında sessizce eski parsera dönmez, üretimi yanlış veriyle yayımlamak yerine açık hata verir.
 
 Hafta sonu üretiminde ESTÜ isteği yapılmaz ve JSON `status: "weekend_closed"` üretir. Yeni PDF yayınlanmamışsa veya cache’te hedef gün bulunamıyorsa JSON `status: "not_published"` olur. Sadece bir yemekhane üretilebilirse `status: "partial"` yazılır. Ağ hatasında son geçerli cache korunur ve ilgili yayın günündeki sonraki kontrol yeniden dener.
 
