@@ -1,29 +1,29 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "23.09.2026",
-  "isoDate": "2026-09-23",
-  "weekday": 3,
+  "date": "24.09.2026",
+  "isoDate": "2026-09-24",
+  "weekday": 4,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "SEBZE ÇORBA",
-    "TAVUK DÖNER+GARN.+Garn. 295 SULU KÖFTE",
-    "ZY. BARBUNYA PİLAKİ*",
-    "MISIRLI PİRİNÇ PİLAVI",
-    "YOĞURTLU KÖZ KAPYA"
+    "KÖYLÜ ÇORBA",
+    "ZY. BROKOLİ*",
+    "KIYMALI TALAŞ BÖREĞİ",
+    "GAZOZ"
   ],
   "akademikKulup": [
-    "SEBZELİ TAVUK",
-    "ERZİNCAN ÇORBASI SUYU ÇORBASI",
-    "PÜRELİ DANA SOTE",
-    "SALSA SOSLU PİLİÇ",
-    "PİRZOLA",
+    "EKŞİLİ ARAP ERZİNCAN ÇORBASI",
+    "DANA ROSTO",
+    "TAVUKLU ORMAN",
+    "KEBABI",
     "BARBUNYA",
-    "KUSKUS"
+    "PİRİNÇ PİLAVI",
+    "ERİŞTE (CEVİZLİ)",
+    "(ŞEHRİYELİ)"
   ],
-  "generatedAt": "2026-09-23T12:51:16+03:00",
+  "generatedAt": "2026-09-24T12:51:04+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
