@@ -1,29 +1,26 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "24.09.2026",
-  "isoDate": "2026-09-24",
-  "weekday": 4,
+  "date": "25.09.2026",
+  "isoDate": "2026-09-25",
+  "weekday": 5,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "KÖYLÜ ÇORBA",
-    "ZY. BROKOLİ*",
-    "KIYMALI TALAŞ BÖREĞİ",
-    "GAZOZ"
+    "TOYGA ÇORBA",
+    "ORMAN KEBABI",
+    "BEZELYE YEMEĞİ*",
+    "BULGUR PİLAVI",
+    "MEYVE SUYU"
   ],
   "akademikKulup": [
-    "EKŞİLİ ARAP ERZİNCAN ÇORBASI",
-    "DANA ROSTO",
-    "TAVUKLU ORMAN",
-    "KEBABI",
-    "BARBUNYA",
-    "PİRİNÇ PİLAVI",
-    "ERİŞTE (CEVİZLİ)",
-    "(ŞEHRİYELİ)"
+    "EKŞİLİ ARAP ÇORBASI",
+    "AKÇAABAT KÖFTE",
+    "PİLİÇ ROTI",
+    "ERİŞTE (CEVİZLİ)"
   ],
-  "generatedAt": "2026-09-24T12:51:04+03:00",
+  "generatedAt": "2026-09-25T13:06:38+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
