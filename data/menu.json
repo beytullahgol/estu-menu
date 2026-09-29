@@ -1,33 +1,29 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "28.09.2026",
-  "isoDate": "2026-09-28",
-  "weekday": 1,
+  "date": "29.09.2026",
+  "isoDate": "2026-09-29",
+  "weekday": 2,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "HAVUÇ ÇORBA",
-    "ETLİ KURU FASULYE",
-    "GEMİCİ KURU FASULYE*",
-    "ŞEHRİYELİ PİRİNÇ PİLAVI",
-    "YOĞURT",
-    "*ETSİZ"
+    "EZOGELİN ÇORBA",
+    "CORDON BLEU+ GARN.+Garn. 300 KIYMALI ISPANAK GRATEN",
+    "FIRIN KARNABAHAR*",
+    "SEBZELİ BULGUR PİLAVI",
+    "LİMONATA"
   ],
   "akademikKulup": [
-    "ÇEŞMİ NİGAR",
-    "TOYGA ÇORBASI",
-    "ŞEHZADE KEBABI",
-    "TERİYAKİ SOSLU",
+    "ŞİLİ ÇORBASI",
+    "BONFILE İZGARA",
+    "FIRINDA PİLİÇ",
     "ÇITIR PİLİÇ",
-    "PİLİÇ",
     "PIRASA YEMEĞİ",
-    "PİRİNÇ PİLAVI",
-    "BULGUR PİLAVI",
-    "(HAVUÇLU)"
+    "ARPA ŞEHRIYE",
+    "BULGUR PİLAVI"
   ],
-  "generatedAt": "2026-09-28T23:05:28+03:00",
+  "generatedAt": "2026-09-29T14:14:45+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
