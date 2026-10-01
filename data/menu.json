@@ -1,28 +1,28 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "30.09.2026",
-  "isoDate": "2026-09-30",
-  "weekday": 3,
+  "date": "01.10.2026",
+  "isoDate": "2026-10-01",
+  "weekday": 4,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "TARHANA ÇORBA",
-    "KAŞARLI ISPANAK GRATEN*",
-    "PEYNİRLİ MAKARNA",
-    "TİRAMİSU"
+    "ÇORBASI",
+    "AVALAR TATLILAR",
+    "TATLI ÜZERİ",
+    "DONDURMA TOP",
+    "KAYMAK",
+    "TAHİN"
   ],
   "akademikKulup": [
-    "ÇERKEZ ÇORBASI",
-    "HUMUSLU KEBAP",
-    "KÖRİ SOSLU PİLİÇ",
+    "ÇEŞMİ NİGAR ÇORBASI",
+    "ET SOTE",
+    "PİLİÇ FAJİTA",
     "NOHUT YEMEĞİ",
-    "ARPA ŞEHRIYE",
-    "PİRİNÇ PİLAVI",
-    "PİLAVI"
+    "PİRİNÇ PİLAVI"
   ],
-  "generatedAt": "2026-09-30T14:03:25+03:00",
+  "generatedAt": "2026-10-01T14:31:31+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
@@ -32,6 +32,7 @@
     "anaYemekhanePdfUsedCache": true,
     "anaYemekhanePageUsedCache": true,
     "anaYemekhanePdfLinkLabel": "Yemek Menüsü (Eylül-2026)",
+    "anaYemekhanePdfCacheFile": "data/cache/pdfs/bcb3885bac2cf0c211d285be36572d0d69da634b.pdf",
     "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
     "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_09_28.pdf",
     "akademikKulupPdfUsedCache": true,
