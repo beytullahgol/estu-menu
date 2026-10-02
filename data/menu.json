@@ -1,43 +1,32 @@
 {
   "ok": true,
-  "status": "ok",
-  "date": "01.10.2026",
-  "isoDate": "2026-10-01",
-  "weekday": 4,
+  "status": "partial",
+  "date": "02.10.2026",
+  "isoDate": "2026-10-02",
+  "weekday": 5,
   "isWeekend": false,
-  "message": null,
+  "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
-  "anaYemekhane": [
-    "ÇORBASI",
-    "AVALAR TATLILAR",
-    "TATLI ÜZERİ",
-    "DONDURMA TOP",
-    "KAYMAK",
-    "TAHİN"
-  ],
+  "anaYemekhane": [],
   "akademikKulup": [
-    "ÇEŞMİ NİGAR ÇORBASI",
-    "ET SOTE",
-    "PİLİÇ FAJİTA",
-    "NOHUT YEMEĞİ",
-    "PİRİNÇ PİLAVI"
+    "KREMALI MANTAR ÇORBASI",
+    "İNEGÖL KÖFTE",
+    "FIRINDA PİLİÇ",
+    "PİRZOLA",
+    "MAKARNA (SOSLU)"
   ],
-  "generatedAt": "2026-10-01T20:29:04+03:00",
+  "generatedAt": "2026-10-02T11:18:01+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
     "cacheOnly": true,
-    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
-    "anaYemekhanePdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/EYL%c3%9cL%2026%20MEN%c3%9c%20(SON).pdf",
-    "anaYemekhanePdfUsedCache": true,
-    "anaYemekhanePageUsedCache": true,
-    "anaYemekhanePdfLinkLabel": "Yemek Menüsü (Eylül-2026)",
-    "anaYemekhanePdfCacheFile": "data/cache/pdfs/bcb3885bac2cf0c211d285be36572d0d69da634b.pdf",
     "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
     "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_09_28.pdf",
     "akademikKulupPdfUsedCache": true,
     "akademikKulupPageUsedCache": true,
     "akademikKulupPdfLinkLabel": "Eylül Akademik Kulüp Haftalık Menü"
   },
-  "errors": []
+  "errors": [
+    "Ana yemekhane: Ana yemekhane PDF'sinde hedef tarih için yemek bulunamadı."
+  ]
 }
