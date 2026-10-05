@@ -1,36 +1,42 @@
 {
   "ok": true,
-  "status": "partial",
-  "date": "05.10.2026",
-  "isoDate": "2026-10-05",
-  "weekday": 1,
+  "status": "ok",
+  "date": "06.10.2026",
+  "isoDate": "2026-10-06",
+  "weekday": 2,
   "isWeekend": false,
-  "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
+  "message": null,
   "retrySchedule": [],
-  "anaYemekhane": [],
-  "akademikKulup": [
-    "EKŞİLİ ARAP",
-    "PİRPİRİM ÇORBASI ÇORBASI",
-    "KEŞKEK KEBABI",
-    "KREMALI MANTARLI",
-    "ASYA USULÜ TAVUK",
-    "TAVUK",
-    "BAMYA YEMEĞİ",
-    "PİRİNÇ PİLAVI",
-    "SPAGETTI (SOSLU)"
+  "anaYemekhane": [
+    "PİLİÇ",
+    "SALATALAR",
+    "SALATA",
+    "ÇOR"
   ],
-  "generatedAt": "2026-10-05T23:51:07+03:00",
+  "akademikKulup": [
+    "ACILI TAV.SUYU PİRPİRİM ÇORBASI",
+    "ALINAZIK KEBABI",
+    "BARBEKÜ SOSLU",
+    "PİLİÇ",
+    "SEMİZOTLU YEMEĞİ",
+    "ERİŞTE"
+  ],
+  "generatedAt": "2026-10-06T02:52:51+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
     "cacheOnly": true,
+    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
+    "anaYemekhanePdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/EYL%c3%9cL%2026%20MEN%c3%9c%20(SON).pdf",
+    "anaYemekhanePdfUsedCache": true,
+    "anaYemekhanePageUsedCache": true,
+    "anaYemekhanePdfLinkLabel": "Yemek Menüsü (Eylül-2026)",
+    "anaYemekhanePdfCacheFile": "data/cache/pdfs/78b5e844d3bda9e2a6bbf0e7ac9c4778f6fe4e06.pdf",
     "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
     "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_10_05.pdf",
     "akademikKulupPdfUsedCache": true,
     "akademikKulupPageUsedCache": true,
     "akademikKulupPdfLinkLabel": "Ekim Akademik Kulüp Haftalık Menü"
   },
-  "errors": [
-    "Ana yemekhane: Ana yemekhane PDF'sinde hedef tarih için yemek bulunamadı."
-  ]
+  "errors": []
 }
