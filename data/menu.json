@@ -6,25 +6,7 @@
   "weekday": 1,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
-  "retrySchedule": [
-    "08:03",
-    "08:33",
-    "09:03",
-    "09:33",
-    "10:03",
-    "10:33",
-    "11:03",
-    "11:33",
-    "12:03",
-    "12:33",
-    "13:03",
-    "13:33",
-    "14:03",
-    "14:33",
-    "15:03",
-    "15:33",
-    "16:03"
-  ],
+  "retrySchedule": [],
   "anaYemekhane": [],
   "akademikKulup": [
     "EKŞİLİ ARAP",
@@ -37,19 +19,15 @@
     "PİRİNÇ PİLAVI",
     "SPAGETTI (SOSLU)"
   ],
-  "generatedAt": "2026-10-05T11:43:24+03:00",
+  "generatedAt": "2026-10-05T15:11:58+03:00",
   "sources": {
     "collectionMode": "auto",
-    "refreshSources": [
-      "club"
-    ],
-    "cacheOnly": false,
+    "refreshSources": [],
+    "cacheOnly": true,
     "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
     "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_10_05.pdf",
-    "akademikKulupPageUsedCache": false,
-    "akademikKulupPdfUsedCache": false,
-    "akademikKulupFinalPageUrl": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
-    "akademikKulupFinalPdfUrl": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_10_05.pdf",
+    "akademikKulupPdfUsedCache": true,
+    "akademikKulupPageUsedCache": true,
     "akademikKulupPdfLinkLabel": "Ekim Akademik Kulüp Haftalık Menü"
   },
   "errors": [
