@@ -1,27 +1,29 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "06.10.2026",
-  "isoDate": "2026-10-06",
-  "weekday": 2,
+  "date": "07.10.2026",
+  "isoDate": "2026-10-07",
+  "weekday": 3,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "PİLİÇ",
-    "SALATALAR",
-    "SALATA",
-    "ÇOR"
+    "ÇORBASI",
+    "(TEREYAĞLI)",
+    "PİLİÇ İZGARA",
+    "A SEÇENEKLERİNDE AZ",
+    "BA SEÇENEĞİ VARDIR"
   ],
   "akademikKulup": [
-    "ACILI TAV.SUYU PİRPİRİM ÇORBASI",
-    "ALINAZIK KEBABI",
-    "BARBEKÜ SOSLU",
-    "PİLİÇ",
+    "ACILI TAV.SUYU",
+    "DÜĞÜN ÇORBASI ÇORBASI",
+    "ANTRİKOT TAVA",
+    "ASYA USULÜ TAVUK",
     "SEMİZOTLU YEMEĞİ",
-    "ERİŞTE"
+    "PİRİNÇ PİLAVI",
+    "(TEREYAĞLI)"
   ],
-  "generatedAt": "2026-10-06T14:54:51+03:00",
+  "generatedAt": "2026-10-07T14:39:32+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
