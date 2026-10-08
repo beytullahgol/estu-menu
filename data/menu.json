@@ -1,29 +1,30 @@
 {
   "ok": true,
   "status": "ok",
-  "date": "07.10.2026",
-  "isoDate": "2026-10-07",
-  "weekday": 3,
+  "date": "08.10.2026",
+  "isoDate": "2026-10-08",
+  "weekday": 4,
   "isWeekend": false,
   "message": null,
   "retrySchedule": [],
   "anaYemekhane": [
-    "ÇORBASI",
-    "(TEREYAĞLI)",
-    "PİLİÇ İZGARA",
-    "A SEÇENEKLERİNDE AZ",
-    "BA SEÇENEĞİ VARDIR"
+    "(NOHUTLU)",
+    "AVALAR TATLILAR",
+    "SÜTLAÇ",
+    "TATLI ÜZERİ",
+    "DONDURMA TOP",
+    "KAYMAK",
+    "TAHİN"
   ],
   "akademikKulup": [
-    "ACILI TAV.SUYU",
-    "DÜĞÜN ÇORBASI ÇORBASI",
-    "ANTRİKOT TAVA",
-    "ASYA USULÜ TAVUK",
-    "SEMİZOTLU YEMEĞİ",
-    "PİRİNÇ PİLAVI",
-    "(TEREYAĞLI)"
+    "ERİŞTELİ YEŞİL DÜĞÜN ÇORBASI",
+    "ARNAVUT CİĞERİ",
+    "PİLİÇ KÜLBASTI",
+    "KURU FASÜLYE",
+    "BULGUR PİLAVI",
+    "(NOHUTLU)"
   ],
-  "generatedAt": "2026-10-07T14:39:32+03:00",
+  "generatedAt": "2026-10-08T14:54:19+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
