@@ -1,45 +1,33 @@
 {
   "ok": true,
-  "status": "ok",
-  "date": "08.10.2026",
-  "isoDate": "2026-10-08",
-  "weekday": 4,
+  "status": "partial",
+  "date": "09.10.2026",
+  "isoDate": "2026-10-09",
+  "weekday": 5,
   "isWeekend": false,
-  "message": null,
+  "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
-  "anaYemekhane": [
-    "(NOHUTLU)",
-    "AVALAR TATLILAR",
-    "SÜTLAÇ",
-    "TATLI ÜZERİ",
-    "DONDURMA TOP",
-    "KAYMAK",
-    "TAHİN"
-  ],
+  "anaYemekhane": [],
   "akademikKulup": [
-    "ERİŞTELİ YEŞİL DÜĞÜN ÇORBASI",
-    "ARNAVUT CİĞERİ",
-    "PİLİÇ KÜLBASTI",
+    "ERİŞTELİ YEŞİL MERCİMEK ÇORBASI",
+    "BEYDAĞ KÖFTE",
+    "BEĞENDİL PİLİÇ",
     "KURU FASÜLYE",
-    "BULGUR PİLAVI",
-    "(NOHUTLU)"
+    "PİRİNÇ PİLAVI",
+    "(ŞEHRİYELİ)"
   ],
-  "generatedAt": "2026-10-08T14:54:19+03:00",
+  "generatedAt": "2026-10-09T14:46:11+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
     "cacheOnly": true,
-    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
-    "anaYemekhanePdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/EYL%c3%9cL%2026%20MEN%c3%9c%20(SON).pdf",
-    "anaYemekhanePdfUsedCache": true,
-    "anaYemekhanePageUsedCache": true,
-    "anaYemekhanePdfLinkLabel": "Yemek Menüsü (Eylül-2026)",
-    "anaYemekhanePdfCacheFile": "data/cache/pdfs/78b5e844d3bda9e2a6bbf0e7ac9c4778f6fe4e06.pdf",
     "akademikKulupPage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu",
     "akademikKulupPdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/Haftalik_Menu_2026_10_05.pdf",
     "akademikKulupPdfUsedCache": true,
     "akademikKulupPageUsedCache": true,
     "akademikKulupPdfLinkLabel": "Ekim Akademik Kulüp Haftalık Menü"
   },
-  "errors": []
+  "errors": [
+    "Ana yemekhane: Ana yemekhane PDF'sinde hedef tarih için yemek bulunamadı."
+  ]
 }
