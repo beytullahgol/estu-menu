@@ -1,22 +1,15 @@
 {
-  "ok": false,
-  "status": "not_published",
-  "date": "16.10.2026",
-  "isoDate": "2026-10-16",
-  "weekday": 5,
-  "isWeekend": false,
-  "message": "Bugünün yemek listesi ESTÜ sitesinde henüz yayımlanmadı veya yerel cache'te hazır değil. Yayın günlerinde 08:03–16:03 arasında yeniden kontrol edilecektir.",
+  "ok": true,
+  "status": "weekend_closed",
+  "date": "17.10.2026",
+  "isoDate": "2026-10-17",
+  "weekday": 6,
+  "isWeekend": true,
+  "message": "Bugün hafta sonu, yemekhaneler kapalı.",
   "retrySchedule": [],
   "anaYemekhane": [],
   "akademikKulup": [],
-  "generatedAt": "2026-10-16T12:37:16+03:00",
-  "sources": {
-    "collectionMode": "auto",
-    "refreshSources": [],
-    "cacheOnly": true
-  },
-  "errors": [
-    "Ana yemekhane: Ana yemekhane PDF'sinde hedef tarih için yemek bulunamadı.",
-    "Akademik Kulüp: Akademik Kulüp PDF'sinde hedef tarih için yemek bulunamadı."
-  ]
+  "generatedAt": "2026-10-17T12:08:27+03:00",
+  "sources": {},
+  "errors": []
 }
