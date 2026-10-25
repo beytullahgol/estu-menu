@@ -1,15 +1,15 @@
 {
   "ok": true,
   "status": "weekend_closed",
-  "date": "24.10.2026",
-  "isoDate": "2026-10-24",
-  "weekday": 6,
+  "date": "25.10.2026",
+  "isoDate": "2026-10-25",
+  "weekday": 7,
   "isWeekend": true,
   "message": "Bugün hafta sonu, yemekhaneler kapalı.",
   "retrySchedule": [],
   "anaYemekhane": [],
   "akademikKulup": [],
-  "generatedAt": "2026-10-24T12:23:13+03:00",
+  "generatedAt": "2026-10-25T12:41:57+03:00",
   "sources": {},
   "errors": []
 }
