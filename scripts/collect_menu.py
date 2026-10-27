@@ -30,11 +30,8 @@ from urllib.parse import unquote, urljoin, urlparse
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
-
 ESTU_HOST = "saglikkulturspor.eskisehir.edu.tr"
 ESTU_BASE = f"https://{ESTU_HOST}"
-MAIN_PAGE_URL = f"{ESTU_BASE}/tr/Icerik/Detay/yemekhaneler"
-CLUB_PAGE_URL = f"{ESTU_BASE}/tr/Icerik/Detay/gunluk-menu"
 TIMEZONE = ZoneInfo("Europe/Istanbul")
 USER_AGENT = "ESTU-menu-github-actions/1.0 (+https://github.com/beytullahgol/estu-menu)"
 
@@ -53,21 +50,10 @@ MONTH_NAMES = {
     12: ("Aralık", "Aralik", "ARALIK"),
 }
 
-
-@dataclass
-class TextBlock:
-    index: int
-    text: str
-    x: float
-    y: float
-    group_x: float | None
-
-
 @dataclass
 class Link:
     url: str
     label: str
-
 
 class AnchorParser(HTMLParser):
     """HTML sayfasındaki a[href] etiketlerini bağımlılıksız toplar."""
@@ -96,17 +82,14 @@ class AnchorParser(HTMLParser):
             self._current_href = None
             self._current_text = []
 
-
 def normalize_spaces(value: str) -> str:
     value = html_lib.unescape(value).replace("\xa0", " ")
     value = value.replace("\r", " ").replace("\n", " ").replace("\t", " ")
     return re.sub(r"\s+", " ", value).strip()
 
-
 def is_allowed_estu_url(url: str) -> bool:
     parsed = urlparse(url)
     return parsed.scheme == "https" and (parsed.hostname or "").lower() == ESTU_HOST
-
 
 def resolve_estu_url(href: str, page_url: str) -> str | None:
     href = html_lib.unescape(href.strip())
@@ -114,7 +97,6 @@ def resolve_estu_url(href: str, page_url: str) -> str | None:
         return None
     resolved = urljoin(page_url, href)
     return resolved if is_allowed_estu_url(resolved) else None
-
 
 def extract_pdf_links(page_html: bytes, page_url: str) -> list[Link]:
     parser = AnchorParser()
@@ -126,6 +108,35 @@ def extract_pdf_links(page_html: bytes, page_url: str) -> list[Link]:
             continue
         links.append(Link(url=url, label=normalize_spaces(label)))
     return links
+
+def extract_page_links(root: Path) -> tuple[str, str]:
+    """ESTÜ ana sayfasındaki dinamik menü linklerini bulur, yoksa eski sabit linkleri kullanır."""
+    base_url = "https://saglikkulturspor.eskisehir.edu.tr/tr"
+    main_fallback = f"{ESTU_BASE}/tr/Icerik/Detay/yemekhaneler"
+    club_fallback = f"{ESTU_BASE}/tr/Icerik/Detay/gunluk-menu"
+
+    try:
+        html_bytes, _, _ = get_cached_or_fetch(root, base_url, "pages", "_index.html")
+        html_str = html_bytes.decode('utf-8', errors='replace')
+        parser = AnchorParser()
+        parser.feed(html_str)
+
+        main_url = None
+        club_url = None
+
+        for href, label in parser.links:
+            text = label.casefold()
+            resolved = resolve_estu_url(href, base_url)
+            if not resolved:
+                continue
+            if club_url is None and ("haftalık" in text or "akademik" in text or "haftalik" in text):
+                club_url = resolved
+            if main_url is None and ("yemekhane" in text or "menü" in text or "menu" in text):
+                main_url = resolved
+
+        return main_url or main_fallback, club_url or club_fallback
+    except Exception:
+        return main_fallback, club_fallback
 
 
 def select_monthly_pdf(links: Iterable[Link], target: datetime) -> Link | None:
@@ -157,7 +168,6 @@ def select_monthly_pdf(links: Iterable[Link], target: datetime) -> Link | None:
             return link
     return fallback
 
-
 def select_weekly_pdf(links: Iterable[Link]) -> Link | None:
     for link in links:
         label_folded = link.label.casefold()
@@ -170,244 +180,7 @@ def select_weekly_pdf(links: Iterable[Link]) -> Link | None:
             return link
     return None
 
-
 OBJECT_RE = re.compile(rb"(?:^|\n)(\d+)\s+(\d+)\s+obj\b(.*?)\bendobj\b", re.DOTALL)
-
-
-def pdf_object_map(pdf_data: bytes) -> dict[int, bytes]:
-    return {int(match.group(1)): match.group(3) for match in OBJECT_RE.finditer(pdf_data)}
-
-
-def pdf_stream_data(obj: bytes) -> bytes:
-    stream_position = obj.find(b"stream")
-    if stream_position < 0:
-        return obj
-    data = obj[stream_position + len(b"stream") :]
-    if data.startswith(b"\r\n"):
-        data = data[2:]
-    elif data.startswith((b"\n", b"\r")):
-        data = data[1:]
-    end_position = data.find(b"endstream")
-    if end_position >= 0:
-        data = data[:end_position]
-    data = data.rstrip(b"\r\n")
-    if b"/FlateDecode" in obj[:stream_position]:
-        try:
-            return zlib.decompress(data)
-        except zlib.error:
-            try:
-                return zlib.decompress(data, -15)
-            except zlib.error:
-                pass
-    return data
-
-
-def unicode_codepoint_to_text(codepoint: int) -> str:
-    try:
-        return chr(codepoint)
-    except ValueError:
-        return ""
-
-
-def parse_tounicode_cmap(cmap: bytes) -> dict[int, str]:
-    text = cmap.decode("latin1", errors="ignore")
-    mapping: dict[int, str] = {}
-
-    for section in re.findall(r"beginbfchar(.*?)endbfchar", text, re.IGNORECASE | re.DOTALL):
-        for source, destination in re.findall(r"<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>", section):
-            mapping[int(source, 16)] = unicode_codepoint_to_text(int(destination, 16))
-
-    for section in re.findall(r"beginbfrange(.*?)endbfrange", text, re.IGNORECASE | re.DOTALL):
-        for array_match in re.finditer(
-            r"<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*\[(.*?)\]",
-            section,
-            re.DOTALL,
-        ):
-            first = int(array_match.group(1), 16)
-            last = int(array_match.group(2), 16)
-            destinations = re.findall(r"<([0-9A-Fa-f]+)>", array_match.group(3))
-            for offset, destination in enumerate(destinations):
-                source = first + offset
-                if source > last:
-                    break
-                mapping[source] = unicode_codepoint_to_text(int(destination, 16))
-
-        section_without_arrays = re.sub(
-            r"<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*\[.*?\]",
-            "",
-            section,
-            flags=re.DOTALL,
-        )
-        for source, last, destination in re.findall(
-            r"<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>\s*<([0-9A-Fa-f]+)>",
-            section_without_arrays,
-        ):
-            first_value = int(source, 16)
-            last_value = int(last, 16)
-            destination_value = int(destination, 16)
-            for current in range(first_value, last_value + 1):
-                mapping[current] = unicode_codepoint_to_text(
-                    destination_value + current - first_value
-                )
-    return mapping
-
-
-def parse_literal_pdf_string(value: bytes) -> str:
-    output = bytearray()
-    simple = {
-        ord("n"): b"\n",
-        ord("r"): b"\r",
-        ord("t"): b"\t",
-        ord("b"): b"\x08",
-        ord("f"): b"\x0c",
-        ord("("): b"(",
-        ord(")"): b")",
-        ord("\\"): b"\\",
-    }
-    index = 0
-    while index < len(value):
-        char = value[index]
-        if char != ord("\\"):
-            output.append(char)
-            index += 1
-            continue
-        index += 1
-        if index >= len(value):
-            break
-        escaped = value[index]
-        if escaped in simple:
-            output.extend(simple[escaped])
-            index += 1
-            continue
-        if ord("0") <= escaped <= ord("7"):
-            octal = bytes([escaped])
-            for _ in range(2):
-                if index + 1 >= len(value) or not (ord("0") <= value[index + 1] <= ord("7")):
-                    break
-                index += 1
-                octal += bytes([value[index]])
-            output.append(int(octal, 8))
-            index += 1
-            continue
-        if escaped in (ord("\r"), ord("\n")):
-            if escaped == ord("\r") and index + 1 < len(value) and value[index + 1] == ord("\n"):
-                index += 1
-            index += 1
-            continue
-        output.append(escaped)
-        index += 1
-    return bytes(output).decode("cp1252", errors="ignore")
-
-
-def decode_pdf_hex_string(value: bytes, mapping: dict[int, str]) -> str:
-    value = re.sub(rb"\s+", b"", value)
-    if not value:
-        return ""
-    if len(value) % 2:
-        value += b"0"
-    try:
-        raw = bytes.fromhex(value.decode("ascii"))
-    except ValueError:
-        return ""
-    output: list[str] = []
-    for index in range(0, len(raw) - 1, 2):
-        source = (raw[index] << 8) | raw[index + 1]
-        if source in mapping:
-            output.append(mapping[source])
-    return "".join(output)
-
-
-def decode_pdf_text_show(show: bytes, mapping: dict[int, str]) -> str:
-    output: list[str] = []
-    token_re = re.compile(rb"\((?:\\.|[^\\)])*\)|<([0-9A-Fa-f\s]+)>", re.DOTALL)
-    for token_match in token_re.finditer(show):
-        token = token_match.group(0)
-        if token.startswith(b"("):
-            output.append(parse_literal_pdf_string(token[1:-1]))
-        else:
-            output.append(decode_pdf_hex_string(token[1:-1], mapping))
-    return "".join(output)
-
-
-def pdf_text_blocks(pdf_data: bytes) -> list[TextBlock]:
-    objects = pdf_object_map(pdf_data)
-    page_object: bytes | None = None
-    for obj in objects.values():
-        if re.search(rb"/Type\s*/Page\b", obj) and re.search(rb"/Contents\s+\d+\s+0\s+R", obj):
-            page_object = obj
-            break
-    if page_object is None:
-        return []
-
-    contents_match = re.search(rb"/Contents\s+(\d+)\s+0\s+R", page_object)
-    if contents_match is None:
-        return []
-    content_object = objects.get(int(contents_match.group(1)))
-    if content_object is None:
-        return []
-    content = pdf_stream_data(content_object)
-
-    font_maps: dict[bytes, dict[int, str]] = {}
-    for font_match in re.finditer(rb"/(F\d+)\s+(\d+)\s+0\s+R", page_object):
-        font_name = font_match.group(1)
-        font_object = objects.get(int(font_match.group(2)), b"")
-        mapping: dict[int, str] = {}
-        unicode_match = re.search(rb"/ToUnicode\s+(\d+)\s+0\s+R", font_object)
-        if unicode_match is not None:
-            unicode_object = objects.get(int(unicode_match.group(1)), b"")
-            if unicode_object:
-                mapping = parse_tounicode_cmap(pdf_stream_data(unicode_object))
-        font_maps[font_name] = mapping
-
-    blocks: list[TextBlock] = []
-    bt_re = re.compile(rb"BT(.*?)ET", re.DOTALL)
-    tm_re = re.compile(
-        rb"(?:1\s+0\s+0\s+1|1\s+0\s+0\s+-1)\s+"
-        rb"([+-]?(?:\d+\.?\d*|\.\d+))\s+"
-        rb"([+-]?(?:\d+\.?\d*|\.\d+))\s+Tm",
-        re.DOTALL,
-    )
-    tf_re = re.compile(rb"/(F\d+)\s+[0-9.+-]+\s+Tf")
-    show_re = re.compile(
-        rb"(\[.*?\]\s*TJ|\((?:\\.|[^\\)])*\)\s*Tj|<[^>]+>\s*Tj)",
-        re.DOTALL,
-    )
-    group_re = re.compile(
-        rb"4(?:\.0+)?\s+0\s+0\s+4(?:\.0+)?\s+"
-        rb"([+-]?(?:\d+\.?\d*|\.\d+))\s+"
-        rb"[+-]?(?:\d+\.?\d*|\.\d+)\s+cm"
-    )
-
-    for bt_match in bt_re.finditer(content):
-        body = bt_match.group(1)
-        font_match = tf_re.search(body)
-        tm_match = tm_re.search(body)
-        if font_match is None or tm_match is None:
-            continue
-
-        text_parts: list[str] = []
-        for show_match in show_re.finditer(body):
-            show = show_match.group(1).strip()
-            if show.endswith(b"TJ"):
-                show = show[:-2].strip()
-            if show.startswith(b"[") and show.endswith(b"]"):
-                show = show[1:-1]
-            text_parts.append(decode_pdf_text_show(show, font_maps.get(font_match.group(1), {})))
-
-        prefix = content[: bt_match.start(1)]
-        group_matches = list(group_re.finditer(prefix))
-        group_x = float(group_matches[-1].group(1)) if group_matches else None
-        blocks.append(
-            TextBlock(
-                index=len(blocks),
-                text=normalize_spaces("".join(text_parts)),
-                x=float(tm_match.group(1)),
-                y=float(tm_match.group(2)),
-                group_x=group_x,
-            )
-        )
-    return blocks
-
 
 def remove_duplicate_items(items: Iterable[str]) -> list[str]:
     output: list[str] = []
@@ -423,9 +196,7 @@ def remove_duplicate_items(items: Iterable[str]) -> list[str]:
         output.append(item)
     return output
 
-
 DATE_RE = re.compile(r"(?<!\d)(\d{1,2})\.(\d{1,2})\.(\d{4})(?!\d)")
-
 
 def pdftotext_layout(pdf_data: bytes) -> list[str]:
     """PDF'i Poppler'ın grid koruyan metin çıktısına çevirir.
@@ -453,7 +224,6 @@ def pdftotext_layout(pdf_data: bytes) -> list[str]:
             raise RuntimeError("pdftotext zaman aşımına uğradı.") from exc
     return result.stdout.decode("utf-8", errors="replace").splitlines()
 
-
 def clean_grid_cell(value: str, source: str) -> str:
     """Bir grid hücresinden miktar, kalori, fiyat ve tasarım metnini ayırır."""
     value = normalize_spaces(value)
@@ -478,188 +248,77 @@ def clean_grid_cell(value: str, source: str) -> str:
         return ""
     return value
 
-
-def grid_columns(line: str, target: datetime, source: str) -> tuple[int, list[int]] | None:
-    """Tarih başlığından hedef kolonun ve kolon başlangıçlarının indeksini bulur."""
-    matches = list(DATE_RE.finditer(line))
-    if not matches:
-        return None
-    if source == "weekly" and len(matches) < 5:
-        return None
-    target_matches = [
-        index for index, match in enumerate(matches)
-        if (int(match.group(1)), int(match.group(2)), int(match.group(3)))
-        == (target.day, target.month, target.year)
-    ]
-    if not target_matches:
-        return None
-    return target_matches[0], [match.start() for match in matches]
-
-
-def extract_grid_items(pdf_data: bytes, target: datetime, source: str) -> list[str]:
-    """Tarih başlıklarından kolonları öğrenerek günlük menüyü çıkarır."""
+def extract_grid_items(pdf_data: bytes, source: str) -> dict[str, list[str]]:
+    """Tarih başlıklarından kolonları öğrenerek tüm günlerin menülerini çıkarır."""
     lines = pdftotext_layout(pdf_data)
-    header_index = -1
-    target_column = -1
-    starts: list[int] = []
+    result: dict[str, list[str]] = {}
+
+    header_indices: list[int] = []
     for index, line in enumerate(lines):
-        found = grid_columns(line, target, source)
-        if found is not None:
-            target_column, starts = found
-            header_index = index
-            break
-    if header_index < 0:
-        return []
+        matches = list(DATE_RE.finditer(line))
+        if matches:
+            if source == "weekly" and len(matches) < 5:
+                continue
+            header_indices.append(index)
 
-    # Aylık PDF'in sonraki haftası yeni tarih başlığıyla, haftalık PDF'in menüsü
-    # ise servis saati/ikinci sabit tabloyla biter.
-    end_index = len(lines)
-    for index in range(header_index + 1, len(lines)):
-        if DATE_RE.search(lines[index]):
-            end_index = index
-            break
-        if source == "weekly" and re.search(r"SERVİS SAATİMİZ", lines[index], re.I):
-            end_index = index
-            break
+    for i, header_index in enumerate(header_indices):
+        line = lines[header_index]
+        matches = list(DATE_RE.finditer(line))
+        dates = [(m.group(1), m.group(2), m.group(3)) for m in matches]
+        all_starts = [m.start() for m in matches]
 
-    chunks: list[tuple[str, bool]] = []
-    for line in lines[header_index + 1:end_index]:
-        if source == "weekly":
-            records = list(re.finditer(
-                r"(.+?)\s+\d+(?:[.,]\d+)?\s*kcal\s+\d+(?:[.,]\d+)?\s*(?:₺|TL)",
-                line,
-                re.IGNORECASE,
-            ))
-        else:
-            records = list(re.finditer(
-                r"(.+?)\s+\d+(?:[.,]\d+)?\s*(?:gr\.?|ml\.?)\s+\d+(?:[.,]\d+)?",
-                line,
-                re.IGNORECASE,
-            ))
-        left_boundary = (
-            (starts[target_column - 1] + starts[target_column]) / 2
-            if target_column > 0
-            else -1
-        )
-        right_boundary = (
-            (starts[target_column] + starts[target_column + 1]) / 2
-            if target_column + 1 < len(starts)
-            else float("inf")
-        )
-        target_records = [
-            record for record in records
-            if left_boundary <= record.start() < right_boundary
-        ]
-        if target_records:
-            cell = clean_grid_cell(target_records[0].group(1), source)
-            if cell and not DATE_RE.search(cell):
-                chunks.append((cell, True))
-            continue
+        end_index = len(lines)
+        if i + 1 < len(header_indices):
+            end_index = header_indices[i + 1]
 
-        # Bazı PDF hücreleri bir yemek adını iki satıra böler ve ikinci satıra
-        # miktar/kalori yazmaz (örn. SOĞUK AYRAN AŞI / ÇORBASI). Yalnızca bu
-        # durumda, tarih başlığından öğrenilen kolonda kalan kısa metni ekle.
-        if target_column < len(starts):
-            start = max(0, int(left_boundary))
-            stop = min(len(line), int(right_boundary)) if right_boundary != float("inf") else len(line)
-            continuation = clean_grid_cell(line[start:stop], source)
-            if (
-                continuation
-                and len(continuation) <= 24
-                and not DATE_RE.search(continuation)
-                and not re.search(r"\d|₺|\bTL\b|\bkcal\b", continuation, re.I)
-            ):
-                chunks.append((continuation, False))
+        for index in range(header_index + 1, end_index):
+            if source == "weekly" and re.search(r"SERVİS SAATİMİZ", lines[index], re.I):
+                end_index = index
+                break
 
-    # Satır taşmaları (ör. SOĞUK AYRAN AŞI / ÇORBASI) aynı hücredeki ardışık
-    # parçalar olmalıdır; miktar/kalori içermeyen kısa parçalar da korunur.
-    items: list[str] = []
-    for chunk, is_record in chunks:
-        if items and not is_record and (
-            chunk.casefold() in {"çorbasi", "çorbası", "pilavı", "pilavi"}
-            or chunk.casefold().endswith(("çorbasi", "çorbası"))
-        ):
-            items[-1] = normalize_spaces(f"{items[-1]} {chunk}")
-        else:
-            items.append(chunk)
-    return remove_duplicate_items(items)
+        cols = len(dates)
+        chunks_per_col: list[list[tuple[str, bool]]] = [[] for _ in range(cols)]
 
+        for index in range(header_index + 1, end_index):
+            cur_line = lines[index]
+            if source == "weekly":
+                records = list(re.finditer(
+                    r"(.+?)\s+\d+(?:[.,]\d+)?\s*kcal\s+\d+(?:[.,]\d+)?\s*(?:₺|TL)",
+                    cur_line, re.IGNORECASE))
+            else:
+                records = list(re.finditer(
+                    r"(.+?)\s+\d+(?:[.,]\d+)?\s*(?:gr\.?|ml\.?)\s+\d+(?:[.,]\d+)?",
+                    cur_line, re.IGNORECASE))
 
-def is_monthly_non_menu_text(text: str) -> bool:
-    if not text:
-        return True
-    if re.fullmatch(r"\d+(?:[.,]\d+)?(?:\s*(?:gr\.?|ml\.?))?", text, re.IGNORECASE):
-        return True
-    return re.fullmatch(r"(?:Miktar|Kalori|gr\.?|ml\.?)", text, re.IGNORECASE) is not None
+            for c in range(cols):
+                left_boundary = (all_starts[c - 1] + all_starts[c]) / 2 if c > 0 else -1
+                right_boundary = (all_starts[c] + all_starts[c + 1]) / 2 if c + 1 < cols else float("inf")
 
+                target_records = [r for r in records if left_boundary <= r.start() < right_boundary]
+                if target_records:
+                    cell = clean_grid_cell(target_records[0].group(1), source)
+                    if cell and not DATE_RE.search(cell):
+                        chunks_per_col[c].append((cell, True))
+                    continue
 
-def extract_monthly_items(blocks: list[TextBlock], date_text: str) -> list[str]:
-    target = next(
-        (block for block in blocks if re.search(r"(?<!\d)" + re.escape(date_text) + r"(?!\d)", block.text)),
-        None,
-    )
-    if target is None:
-        return []
+                start = max(0, int(left_boundary))
+                stop = min(len(cur_line), int(right_boundary)) if right_boundary != float("inf") else len(cur_line)
+                continuation = clean_grid_cell(cur_line[start:stop], source)
+                if continuation and len(continuation) <= 24 and not DATE_RE.search(continuation) and not re.search(r"\d|₺|\bTL\b|\bkcal\b", continuation, re.I):
+                    chunks_per_col[c].append((continuation, False))
 
-    next_date_y = -math.inf
-    for block in blocks:
-        # Aynı satırdaki (Y farkı < 10) tarihleri görmezden gel, 
-        # bir sonraki haftanın/satırın tarihini bul.
-        if block.y < target.y - 10 and re.search(r"\d{2}\.\d{2}\.\d{4}", block.text):
-            next_date_y = max(next_date_y, block.y)
+        for c in range(cols):
+            items: list[str] = []
+            for chunk, is_record in chunks_per_col[c]:
+                if items and not is_record and (chunk.casefold() in {"çorbasi", "çorbası", "pilavı", "pilavi"} or chunk.casefold().endswith(("çorbasi", "çorbası"))):
+                    items[-1] = normalize_spaces(f"{items[-1]} {chunk}")
+                else:
+                    items.append(chunk)
 
-    items: list[str] = []
-    for block in blocks:
-        if block.x >= target.x or block.x < target.x - 95:
-            continue
-        if block.y >= target.y - 0.1 or block.y <= next_date_y + 0.2:
-            continue
-        if is_monthly_non_menu_text(block.text) or re.search(r"\d{2}\.\d{2}\.\d{4}", block.text):
-            continue
-        if block.x < -1:
-            # PDF hücre içinde satır taşan devam metnini birleştir.
-            if items:
-                items[-1] = normalize_spaces(f"{items[-1]} {block.text}")
-            continue
-        items.append(block.text)
-    return remove_duplicate_items(items)
+            d_str = f"{dates[c][0].zfill(2)}.{dates[c][1].zfill(2)}.{dates[c][2]}"
+            result[d_str] = remove_duplicate_items(items)
 
-
-def is_weekly_non_menu_text(text: str) -> bool:
-    if not text:
-        return True
-    if re.search(r"\d{1,2}\.\d{1,2}\.\d{4}|Pazartesi|Salı|Çarşamba|Perşembe|Cuma|Cumartesi|Pazar", text, re.IGNORECASE):
-        return True
-    if re.search(r"kcal|₺|TL|SERVİS|SOĞUKLAR|MİKTAR|KALORİ", text, re.IGNORECASE):
-        return True
-    return re.fullmatch(r"[0-9.,+\- ]+", text) is not None
-
-
-def extract_weekly_items(blocks: list[TextBlock], date_text: str) -> list[str]:
-    target = next(
-        (block for block in blocks if re.search(r"(?<!\d)" + re.escape(date_text) + r"(?!\d)", block.text)),
-        None,
-    )
-    if target is None or target.group_x is None:
-        return []
-
-    items: list[str] = []
-    for block in blocks:
-        if block.index <= target.index or block.group_x is None:
-            continue
-        if abs(block.group_x - target.group_x) > 0.5:
-            continue
-        if is_weekly_non_menu_text(block.text):
-            continue
-        if block.x < -1:
-            # PDF hücre içinde satır taşan devam metnini (ör. ÇORBASI veya PİLAVI)
-            # ayrı yemek değil, önceki öğenin devamı olarak yazabilir.
-            if items:
-                items[-1] = normalize_spaces(f"{items[-1]} {block.text}")
-            continue
-        items.append(block.text)
-    return remove_duplicate_items(items)
-
+    return result
 
 def request_bytes(url: str) -> tuple[bytes, str]:
     if not is_allowed_estu_url(url):
@@ -681,13 +340,11 @@ def request_bytes(url: str) -> tuple[bytes, str]:
     except (HTTPError, URLError, TimeoutError) as exc:
         raise RuntimeError(f"İstek başarısız ({url}): {exc}") from exc
 
-
 def url_cache_path(root: Path, kind: str, url: str, suffix: str) -> Path:
     digest = hashlib.sha1(url.encode("utf-8")).hexdigest()
     directory = root / "data" / "cache" / kind
     directory.mkdir(parents=True, exist_ok=True)
     return directory / f"{digest}{suffix}"
-
 
 def get_cached_or_fetch(root: Path, url: str, kind: str, suffix: str) -> tuple[bytes, bool, str]:
     """Sayfayı güncel tutmaya çalışır; ağ hatasında son cache'i kullanır."""
@@ -701,7 +358,6 @@ def get_cached_or_fetch(root: Path, url: str, kind: str, suffix: str) -> tuple[b
             return cache_path.read_bytes(), True, url
         raise
 
-
 def get_pdf_cached_or_fetch(root: Path, url: str) -> tuple[bytes, bool, str]:
     """Aynı PDF URL'sinde ESTÜ'ye tekrar PDF isteği göndermez."""
     cache_path = url_cache_path(root, "pdfs", url, ".pdf")
@@ -711,14 +367,12 @@ def get_pdf_cached_or_fetch(root: Path, url: str) -> tuple[bytes, bool, str]:
     cache_path.write_bytes(body)
     return body, False, final_url
 
-
 REFRESH_TIMES = [
     f"{hour:02d}:{minute:02d}"
     for hour in range(8, 17)
     for minute in (3, 33)
     if not (hour == 16 and minute == 33)
 ]
-
 
 def parse_date(value: str | None) -> datetime:
     if not value:
@@ -729,9 +383,28 @@ def parse_date(value: str | None) -> datetime:
         raise ValueError("Tarih GG.AA.YYYY biçiminde olmalıdır.") from exc
     return parsed.replace(tzinfo=TIMEZONE)
 
-
 def source_state_path(root: Path) -> Path:
     return root / "data" / "cache" / "source_state.json"
+
+def load_master_cache(root: Path, kind: str) -> dict[str, list[str]]:
+    path = root / "data" / f"master_{kind}.json"
+    if path.exists():
+        try:
+            return json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            pass
+    return {}
+
+
+def save_master_cache(root: Path, kind: str, data: dict[str, list[str]]) -> None:
+    path = root / "data" / f"master_{kind}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", delete=False, dir=path.parent) as tf:
+        json.dump(data, tf, ensure_ascii=False, indent=2)
+        tf.write("\n")
+        temp_name = tf.name
+    import os
+    os.replace(temp_name, path)
 
 
 def load_source_state(root: Path) -> dict[str, dict[str, object]]:
@@ -760,13 +433,13 @@ def load_source_state(root: Path) -> dict[str, dict[str, object]]:
                 club_url = sources.get("akademikKulupPdf")
                 if main_url:
                     state["anaYemekhane"] = {
-                        "pageUrl": MAIN_PAGE_URL,
+                        "pageUrl": page_url,
                         "pdfUrl": main_url,
                         "pdfLabel": sources.get("anaYemekhanePdfLinkLabel", ""),
                     }
                 if club_url:
                     state["akademikKulup"] = {
-                        "pageUrl": CLUB_PAGE_URL,
+                        "pageUrl": page_url,
                         "pdfUrl": club_url,
                         "pdfLabel": sources.get("akademikKulupPdfLinkLabel", ""),
                     }
@@ -777,39 +450,34 @@ def load_source_state(root: Path) -> dict[str, dict[str, object]]:
     state.setdefault("akademikKulup", {})
     return state
 
-
 def save_source_state(root: Path, state: dict[str, dict[str, object]]) -> None:
     write_json(source_state_path(root), state)
 
-
 def cached_pdf_path(root: Path, url: str) -> Path:
     return url_cache_path(root, "pdfs", url, ".pdf")
-
 
 def cached_pdf_candidates(root: Path) -> list[Path]:
     directory = root / "data" / "cache" / "pdfs"
     return sorted(path for path in directory.glob("*.pdf") if path.is_file() and path.stat().st_size > 0)
 
-
 def find_cached_items(root: Path, target: datetime, source: str) -> tuple[list[str], Path | None]:
     for path in cached_pdf_candidates(root):
         try:
-            items = extract_grid_items(
-                path.read_bytes(), target, "monthly" if source == "main" else "weekly"
+            all_items = extract_grid_items(
+                path.read_bytes(), "monthly" if source == "main" else "weekly"
             )
+            items = all_items.get(target.strftime('%d.%m.%Y'), [])
             if items:
                 return items, path
         except OSError:
             continue
     return [], None
 
-
 def monthly_cache_matches_target(root: Path, target: datetime, state: dict[str, dict[str, object]]) -> bool:
     # URL/etiket yerine PDF içeriğini doğrulamak daha güvenlidir; aynı URL altında
     # dosya içeriği değişmiş olsa bile hedef gün gerçekten bulunuyorsa cache geçerlidir.
     items, _ = find_cached_items(root, target, "main")
     return bool(items)
-
 
 def decide_refresh_sources(
     root: Path,
@@ -847,27 +515,32 @@ def decide_refresh_sources(
             refresh.add("club")
     return refresh
 
-
 def collect_main_source(
     root: Path,
     target: datetime,
     state: dict[str, dict[str, object]],
     refresh: bool,
+    page_url: str,
 ) -> tuple[list[str], dict[str, object]]:
-    sources: dict[str, object] = {"anaYemekhanePage": MAIN_PAGE_URL}
+    master = load_master_cache(root, "main")
+    target_date_str = target.strftime('%d.%m.%Y')
+    if target_date_str in master and not refresh:
+        return master[target_date_str], {"anaYemekhanePage": page_url, "usedMasterCache": True}
+
+    sources: dict[str, object] = {"anaYemekhanePage": page_url}
     entry = state.setdefault("anaYemekhane", {})
 
     if refresh:
         main_html, page_stale, main_final_url = get_cached_or_fetch(
-            root, MAIN_PAGE_URL, "pages", ".html"
+            root, page_url, "pages", ".html"
         )
-        main_link = select_monthly_pdf(extract_pdf_links(main_html, MAIN_PAGE_URL), target)
+        main_link = select_monthly_pdf(extract_pdf_links(main_html, page_url), target)
         if main_link is None:
             raise RuntimeError("Ana yemekhane için aylık PDF bağlantısı bulunamadı.")
         main_pdf, pdf_stale, pdf_final_url = get_pdf_cached_or_fetch(root, main_link.url)
         entry.update(
             {
-                "pageUrl": MAIN_PAGE_URL,
+                "pageUrl": page_url,
                 "pdfUrl": main_link.url,
                 "pdfLabel": main_link.label,
                 "finalPageUrl": main_final_url,
@@ -912,7 +585,11 @@ def collect_main_source(
                 return items, sources
             raise RuntimeError("Ana yemekhane yerel cache'inde hedef tarih için yemek bulunamadı.")
 
-    items = extract_grid_items(main_pdf, target, "monthly")
+    all_items = extract_grid_items(main_pdf, "monthly")
+    if all_items:
+        master.update(all_items)
+        save_master_cache(root, "main", master)
+    items = all_items.get(target.strftime('%d.%m.%Y'), [])
     if not items:
         # Eski source_state URL’si kalmış olabilir; yerel cache’teki diğer PDF’leri
         # ağ isteği yapmadan son kez tara.
@@ -923,27 +600,32 @@ def collect_main_source(
         raise RuntimeError("Ana yemekhane PDF'sinde hedef tarih için yemek bulunamadı.")
     return items, sources
 
-
 def collect_club_source(
     root: Path,
     target: datetime,
     state: dict[str, dict[str, object]],
     refresh: bool,
+    page_url: str,
 ) -> tuple[list[str], dict[str, object]]:
-    sources: dict[str, object] = {"akademikKulupPage": CLUB_PAGE_URL}
+    master = load_master_cache(root, "club")
+    target_date_str = target.strftime('%d.%m.%Y')
+    if target_date_str in master and not refresh:
+        return master[target_date_str], {"akademikKulupPage": page_url, "usedMasterCache": True}
+
+    sources: dict[str, object] = {"akademikKulupPage": page_url}
     entry = state.setdefault("akademikKulup", {})
 
     if refresh:
         club_html, page_stale, club_final_url = get_cached_or_fetch(
-            root, CLUB_PAGE_URL, "pages", ".html"
+            root, page_url, "pages", ".html"
         )
-        club_link = select_weekly_pdf(extract_pdf_links(club_html, CLUB_PAGE_URL))
+        club_link = select_weekly_pdf(extract_pdf_links(club_html, page_url))
         if club_link is None:
             raise RuntimeError("Akademik Kulüp için haftalık PDF bağlantısı bulunamadı.")
         club_pdf, pdf_stale, pdf_final_url = get_pdf_cached_or_fetch(root, club_link.url)
         entry.update(
             {
-                "pageUrl": CLUB_PAGE_URL,
+                "pageUrl": page_url,
                 "pdfUrl": club_link.url,
                 "pdfLabel": club_link.label,
                 "finalPageUrl": club_final_url,
@@ -988,11 +670,14 @@ def collect_club_source(
                 return items, sources
             raise RuntimeError("Akademik Kulüp yerel cache'inde hedef tarih için yemek bulunamadı.")
 
-    items = extract_grid_items(club_pdf, target, "weekly")
+    all_items = extract_grid_items(club_pdf, "weekly")
+    if all_items:
+        master.update(all_items)
+        save_master_cache(root, "club", master)
+    items = all_items.get(target.strftime('%d.%m.%Y'), [])
     if not items:
         raise RuntimeError("Akademik Kulüp PDF'sinde hedef tarih için yemek bulunamadı.")
     return items, sources
-
 
 def build_output(
     target: datetime,
@@ -1054,14 +739,14 @@ def build_output(
         "errors": errors,
     }
 
-
 def write_json(path: Path, value: dict[str, object]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(value, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
-
+    import tempfile, os, json
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", delete=False, dir=path.parent) as tf:
+        json.dump(value, tf, ensure_ascii=False, indent=2)
+        tf.write("\n")
+        temp_name = tf.name
+    os.replace(temp_name, path)
 
 def collect(
     root: Path,
@@ -1077,6 +762,7 @@ def collect(
     state = load_source_state(root)
     refresh_sources = decide_refresh_sources(root, target, state, mode)
     errors: list[str] = []
+    main_page_url, club_page_url = extract_page_links(root)
     sources: dict[str, object] = {
         "collectionMode": mode,
         "refreshSources": sorted(refresh_sources),
@@ -1087,7 +773,7 @@ def collect(
 
     try:
         ana_items, main_sources = collect_main_source(
-            root, target, state, "main" in refresh_sources
+            root, target, state, "main" in refresh_sources, main_page_url
         )
         sources.update(main_sources)
     except Exception as exc:
@@ -1095,7 +781,7 @@ def collect(
 
     try:
         club_items, club_sources = collect_club_source(
-            root, target, state, "club" in refresh_sources
+            root, target, state, "club" in refresh_sources, club_page_url
         )
         sources.update(club_sources)
     except Exception as exc:
@@ -1165,7 +851,6 @@ def collect(
         print(f"UYARI: {error}", file=sys.stderr)
     return 0
 
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--date", help="Test veya manuel çalıştırma için GG.AA.YYYY")
@@ -1189,7 +874,6 @@ def main() -> int:
         print(f"HATA: {exc}", file=sys.stderr)
         return 2
     return collect(root, target, output_path, mode=args.mode)
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

@@ -16,7 +16,8 @@ cases = [
     }),
 ]
 for pdf, target, source, expected in cases:
-    items = collect_menu.extract_grid_items(pdf.read_bytes(), target, source)
+    all_items = collect_menu.extract_grid_items(pdf.read_bytes(), source)
+    items = all_items.get(target.strftime('%d.%m.%Y'), [])
     print(source, items)
     missing = expected - set(items)
     if missing:
@@ -26,14 +27,16 @@ print('V2 regression PASS')
 # Verify every menu day resolves to a distinct header section.
 month = cases[0][0].read_bytes()
 for day in (3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 17, 18, 19, 20, 21, 24, 25, 26, 27, 28, 31):
-    result = collect_menu.extract_grid_items(month, datetime(2026, 8, day), 'monthly')
+    all_items = collect_menu.extract_grid_items(month, 'monthly')
+    result = all_items.get(datetime(2026, 8, day).strftime('%d.%m.%Y'), [])
     if not result:
         raise SystemExit(f'NO MONTHLY ITEMS {day}')
 print('monthly day coverage PASS')
 
 week = cases[1][0].read_bytes()
 for day in range(10, 15):
-    result = collect_menu.extract_grid_items(week, datetime(2026, 8, day), 'weekly')
+    all_items = collect_menu.extract_grid_items(week, 'weekly')
+    result = all_items.get(datetime(2026, 8, day).strftime('%d.%m.%Y'), [])
     if not result:
         raise SystemExit(f'NO WEEKLY ITEMS {day}')
 print('weekly day coverage PASS')
