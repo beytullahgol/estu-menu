@@ -127,5 +127,5 @@ Alan boş bırakılırsa workflow Türkiye saatine göre güncel tarihi `data/me
 
 ## Kaynaklar
 
-- Ana yemekhane: <https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler>
-- Akademik Kulüp: <https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu>
+- Ana yemekhane: (Dinamik olarak belirlenir, eski varsayılan: https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler)
+- Akademik Kulüp: (Dinamik olarak belirlenir, eski varsayılan: https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/gunluk-menu)
