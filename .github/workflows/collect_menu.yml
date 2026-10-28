@@ -33,12 +33,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Repository'yi al
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         with:
           fetch-depth: 0
 
       - name: Python'u kur
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5.3.0
         with:
           python-version: "3.12"
           cache: pip
@@ -78,7 +78,7 @@ jobs:
 
       - name: Manuel test çıktısını artifact olarak yükle
         if: ${{ inputs.date }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.4.3
         with:
           name: menu-test-${{ inputs.date }}
           path: data/test/${{ inputs.date }}.json
@@ -134,7 +134,7 @@ jobs:
 
       - name: GitHub Pages ayarını hazırla
         if: ${{ !inputs.date }}
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v5.0.0
         with:
           enablement: true
 
@@ -166,4 +166,4 @@ jobs:
       - name: GitHub Pages'e dağıt
         if: ${{ !inputs.date }}
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v4.0.5
