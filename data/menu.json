@@ -1,21 +1,20 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "02.11.2026",
-  "isoDate": "2026-11-02",
-  "weekday": 1,
+  "date": "03.11.2026",
+  "isoDate": "2026-11-03",
+  "weekday": 2,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "TARHANA ÇORBA",
-    "TAVUK DÖNER+GARN.+Garn. 300 KIYMALI ISPANAK YEMEĞİ+YOĞURT",
-    "YEŞİL MERCİMEK YEMEĞİ*",
-    "ŞEHRİYELİ BULGUR PİLAVI",
-    "İRMİK HELVASI"
+    "KÖYLÜ ÇORBA",
+    "YOĞURTLU ISPANAK*",
+    "SOSLU MAKARNA",
+    "MEYVE"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-02T16:21:05+03:00",
+  "generatedAt": "2026-11-03T01:16:46+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
