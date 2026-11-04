@@ -1,20 +1,21 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "03.11.2026",
-  "isoDate": "2026-11-03",
-  "weekday": 2,
+  "date": "04.11.2026",
+  "isoDate": "2026-11-04",
+  "weekday": 3,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "KÖYLÜ ÇORBA",
-    "YOĞURTLU ISPANAK*",
-    "SOSLU MAKARNA",
-    "MEYVE"
+    "KIŞ ÇORBASI",
+    "ÇİFTLİK KEBABI",
+    "BEZELYE YEMEĞİ*",
+    "ŞEHRİYELİ PİRİNÇ PİLAVI",
+    "YOĞURT"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-03T15:42:44+03:00",
+  "generatedAt": "2026-11-04T15:52:45+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
