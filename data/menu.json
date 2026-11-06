@@ -1,21 +1,21 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "05.11.2026",
-  "isoDate": "2026-11-05",
-  "weekday": 4,
+  "date": "06.11.2026",
+  "isoDate": "2026-11-06",
+  "weekday": 5,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "YAYLA ÇORBASI",
-    "KIYMALI PATATES OTURTMA",
-    "KAŞARLI PATATES OTURTMA*",
-    "BULGUR PİLAVI",
-    "KALBURABASTI"
+    "EZOGELİN ÇORBA",
+    "TAVUK HAŞLAMA",
+    "BAMYA YEMEĞİ*",
+    "PİRİNÇ PİLAVI",
+    "GAZOZ"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-05T16:00:41+03:00",
+  "generatedAt": "2026-11-06T15:49:10+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
