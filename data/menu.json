@@ -1,21 +1,20 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "09.11.2026",
-  "isoDate": "2026-11-09",
-  "weekday": 1,
+  "date": "10.11.2026",
+  "isoDate": "2026-11-10",
+  "weekday": 2,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "MERCİMEK ÇORBA",
-    "CORDON BLUE+GARN.+Garn. 310 ETLİ KURU FASULYE",
-    "KARNABAHAR TAVA*",
-    "BULGUR PİLAVI",
-    "AYRAN"
+    "KREMALI SEBZE ÇORBA",
+    "GEMİCİ KURU FASULYE*",
+    "PİRİNÇ PİLAVI",
+    "TURŞU"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-09T16:45:50+03:00",
+  "generatedAt": "2026-11-10T01:57:36+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
