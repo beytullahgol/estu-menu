@@ -1,15 +1,32 @@
 {
   "ok": true,
-  "status": "weekend_closed",
-  "date": "08.11.2026",
-  "isoDate": "2026-11-08",
-  "weekday": 7,
-  "isWeekend": true,
-  "message": "Bugün hafta sonu, yemekhaneler kapalı.",
+  "status": "partial",
+  "date": "09.11.2026",
+  "isoDate": "2026-11-09",
+  "weekday": 1,
+  "isWeekend": false,
+  "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
-  "anaYemekhane": [],
+  "anaYemekhane": [
+    "MERCİMEK ÇORBA",
+    "CORDON BLUE+GARN.+Garn. 310 ETLİ KURU FASULYE",
+    "KARNABAHAR TAVA*",
+    "BULGUR PİLAVI",
+    "AYRAN"
+  ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-08T14:49:43+03:00",
-  "sources": {},
-  "errors": []
+  "generatedAt": "2026-11-09T16:45:50+03:00",
+  "sources": {
+    "collectionMode": "auto",
+    "refreshSources": [],
+    "cacheOnly": true,
+    "anaYemekhanePage": "https://saglikkulturspor.eskisehir.edu.tr/tr/Icerik/Detay/yemekhaneler",
+    "anaYemekhanePdf": "https://saglikkulturspor.eskisehir.edu.tr/Uploads/saglikkulturspor/files/KASIM%202026%20MEN%c3%9c(1).pdf",
+    "anaYemekhanePdfUsedCache": true,
+    "anaYemekhanePageUsedCache": true,
+    "anaYemekhanePdfLinkLabel": "Yemek Menüsü (Kasım-2026)"
+  },
+  "errors": [
+    "Akademik Kulüp: Akademik Kulüp PDF'sinde hedef tarih için yemek bulunamadı."
+  ]
 }
