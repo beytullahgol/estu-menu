@@ -1,21 +1,21 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "11.11.2026",
-  "isoDate": "2026-11-11",
-  "weekday": 3,
+  "date": "12.11.2026",
+  "isoDate": "2026-11-12",
+  "weekday": 4,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "DOMATES ÇORBA",
-    "SULU KÖFTE",
-    "PATATES YEMEĞİ*",
-    "SOSLU MAKARNA",
-    "MEYVE"
+    "TARHANA ÇORBA",
+    "FIRIN TAVUK+FIRIN PATATES",
+    "ZY.BROKOLİ*",
+    "BULGUR PİLAVI",
+    "MEVSİM SALATA"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-11T15:34:03+03:00",
+  "generatedAt": "2026-11-12T16:39:36+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
