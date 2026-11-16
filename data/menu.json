@@ -1,21 +1,21 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "16.11.2026",
-  "isoDate": "2026-11-16",
-  "weekday": 1,
+  "date": "17.11.2026",
+  "isoDate": "2026-11-17",
+  "weekday": 2,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "DOMATES ÇORBA",
-    "NOHUT YEMEĞİ",
-    "NOHUT YEMEĞİ*",
-    "PİRİNÇ PİLAVI",
-    "YOĞURT"
+    "KREMALI MANTAR ÇORBA",
+    "TAVUKLU BEZELYE YEMEĞİ",
+    "BEZELYE YEMEĞİ*",
+    "BULGUR PİLAVI",
+    "MEYVE SUYU"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-16T16:30:18+03:00",
+  "generatedAt": "2026-11-17T01:50:20+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
