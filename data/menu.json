@@ -1,21 +1,20 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "18.11.2026",
-  "isoDate": "2026-11-18",
-  "weekday": 3,
+  "date": "19.11.2026",
+  "isoDate": "2026-11-19",
+  "weekday": 4,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "BROKOLİ ÇORBA",
-    "FIRINDA BALIK+ROKA+Garn. 300 İZMİR KÖFTE",
-    "ZY. TAZE FASULYE*",
-    "TEREYAĞLI ERİŞTE",
-    "TAHİN HELVASI"
+    "EZOGELİN ÇORBA",
+    "PATATES YEMEĞİ*",
+    "PEYNİRLİ MAKARNA",
+    "MEYVE"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-18T16:46:20+03:00",
+  "generatedAt": "2026-11-19T17:14:50+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
