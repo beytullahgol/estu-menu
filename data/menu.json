@@ -1,20 +1,21 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "19.11.2026",
-  "isoDate": "2026-11-19",
-  "weekday": 4,
+  "date": "20.11.2026",
+  "isoDate": "2026-11-20",
+  "weekday": 5,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "EZOGELİN ÇORBA",
-    "PATATES YEMEĞİ*",
-    "PEYNİRLİ MAKARNA",
-    "MEYVE"
+    "TOYGA ÇORBA",
+    "KIYMALI YEŞİL MERCİMEK",
+    "YEŞİL MERCİMEK*",
+    "MISIRLI PİRİNÇ PİLAVI",
+    "BURMA KADAYIF"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-19T17:14:50+03:00",
+  "generatedAt": "2026-11-20T16:55:35+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
