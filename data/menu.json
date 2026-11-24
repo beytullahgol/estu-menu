@@ -1,21 +1,21 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "23.11.2026",
-  "isoDate": "2026-11-23",
-  "weekday": 1,
+  "date": "24.11.2026",
+  "isoDate": "2026-11-24",
+  "weekday": 2,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "SEBZE ÇORBA",
-    "MANTI (SOS+YOĞURT)",
-    "YOĞURTLU ISPANAK*",
-    "PATLICAN SALATASI",
-    "MEYVE SUYU"
+    "MERCİMEK ÇORBA",
+    "MANTARLI TAVUK SOTE",
+    "MANTAR SOTE*",
+    "BULGUR PİLAVI",
+    "PEMBE SULTAN"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-23T18:50:35+03:00",
+  "generatedAt": "2026-11-24T03:43:52+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
