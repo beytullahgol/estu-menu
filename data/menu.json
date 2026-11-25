@@ -1,21 +1,21 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "24.11.2026",
-  "isoDate": "2026-11-24",
-  "weekday": 2,
+  "date": "25.11.2026",
+  "isoDate": "2026-11-25",
+  "weekday": 3,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "MERCİMEK ÇORBA",
-    "MANTARLI TAVUK SOTE",
-    "MANTAR SOTE*",
-    "BULGUR PİLAVI",
-    "PEMBE SULTAN"
+    "KÖYLÜ ÇORBA",
+    "KURU KÖFTE+PATATES",
+    "ZY.KARNABAHAR*",
+    "ŞEHRİYELİ PİRİNÇ PİLAVI",
+    "SUPANGLE"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-24T18:40:27+03:00",
+  "generatedAt": "2026-11-25T18:24:50+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
