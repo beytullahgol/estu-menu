@@ -1,21 +1,21 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "25.11.2026",
-  "isoDate": "2026-11-25",
-  "weekday": 3,
+  "date": "26.11.2026",
+  "isoDate": "2026-11-26",
+  "weekday": 4,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "KÖYLÜ ÇORBA",
-    "KURU KÖFTE+PATATES",
-    "ZY.KARNABAHAR*",
-    "ŞEHRİYELİ PİRİNÇ PİLAVI",
-    "SUPANGLE"
+    "YAYLA ÇORBA",
+    "KIYMALI PIRASA YEMEĞİ*",
+    "ZY. PIRASA YEMEĞİ*",
+    "SOSLU MAKARNA",
+    "MEYVE"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-25T18:24:50+03:00",
+  "generatedAt": "2026-11-26T17:55:20+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
