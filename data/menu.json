@@ -1,21 +1,21 @@
 {
   "ok": true,
   "status": "partial",
-  "date": "26.11.2026",
-  "isoDate": "2026-11-26",
-  "weekday": 4,
+  "date": "27.11.2026",
+  "isoDate": "2026-11-27",
+  "weekday": 5,
   "isWeekend": false,
   "message": "Menülerin bir kısmı henüz yayımlanmadı veya yerel cache'te hazır değil. İlgili yayın gününde 08:03–16:33 arasında yeniden kontrol edilecektir.",
   "retrySchedule": [],
   "anaYemekhane": [
-    "YAYLA ÇORBA",
-    "KIYMALI PIRASA YEMEĞİ*",
-    "ZY. PIRASA YEMEĞİ*",
-    "SOSLU MAKARNA",
-    "MEYVE"
+    "TARHANA ÇORBA",
+    "PÜRELİ DANA HAŞLAMA",
+    "GEMİCİ BARBUNYA*",
+    "PİRİNÇ PİLAVI",
+    "MEVSİM SALATA"
   ],
   "akademikKulup": [],
-  "generatedAt": "2026-11-26T17:55:20+03:00",
+  "generatedAt": "2026-11-27T17:52:48+03:00",
   "sources": {
     "collectionMode": "auto",
     "refreshSources": [],
